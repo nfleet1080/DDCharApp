@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html ng-app="dndapp">
+<head>
+
+    <meta charset="utf-8" />
+    <title>Ionic Side Menu Template</title>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <style>
+        .angular-google-map-container {
+            width: 100%;
+            height: 504px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+    <link href="lib/ionic.min.css" rel="stylesheet" />
+    <link href="lib/ionicons.min.css" rel="stylesheet" />
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic.bundle.js"></script>
+    <script src="lib/ngStorage.min.js"></script>
+
+    <script src="app/app.js"></script>
+    <script src="app/directives.js"></script>
+    <script src="app/factories.js"></script>
+
+    <!-- your project references -->
+    <link href="css/index.css" rel="stylesheet" />
+
+</head>
+<body ng-controller="MainCtrl">
+    <script src="cordova.js"></script>
+    <script src="scripts/platformOverrides.js"></script>
+
+    <ion-nav-view></ion-nav-view>
+
+    <script id="templates/main.html" type="text/ng-template">
+        <ion-side-menus enable-menu-with-back-views="false">
+
+            <ion-side-menu-content>
+                <ion-nav-bar class="bar-positive">
+                    <ion-nav-back-button>
+                    </ion-nav-back-button>
+
+                    <ion-nav-buttons side="left">
+                        <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+                    </ion-nav-buttons>
+                </ion-nav-bar>
+
+                <ion-nav-view name="menuContent"></ion-nav-view>
+            </ion-side-menu-content>
+
+            <ion-side-menu side="left">
+                <ion-header-bar class="bar-dark">
+                    <h1 class="title">Menu</h1>
+                </ion-header-bar>
+                <ion-content>
+                    <div class="list">
+                        <a ui-sref="app.home" class="item item-icon-left" menu-close><i class="icon ion-ios-list-outline positive"></i>Character List</a>
+                        <div class="item item-divider">
+                            New Character
+                        </div>
+                        <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
+                        <a ng-click="resetTempChar()" ui-sref="generator.race" class="item item-icon-left" menu-close><i class="icon ion-wand calm"></i>Character Generator</a>
+                        <a ui-sref="app.manual" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Blank Sheet</a>
+                        <a class="item item-icon-left" menu-close><i class="icon ion-person-stalker dark"></i>Copy Character</a>
+
+                        <div class="item item-divider">
+                            Import Data
+                        </div>
+                        <div class="item">Coming Soon</div>
+                    </div>
+                </ion-content>
+            </ion-side-menu>
+
+        </ion-side-menus>
+    </script>
+
+    <script id="templates/home.html" type="text/ng-template">
+        <ion-view view-title="Character List">
+            <ion-content>
+                <div class="list card">
+                    <div class="item item-text-wrap item-icon-left">
+                        <i class="icon ion-alert-circled assertive"></i>
+                        Character creation is limited to the specifications of the free
+                        online 5th Edition
+                        <a target="_blank" class="alert-link" href="http://media.wizards.com/2014/downloads/dnd/PlayerDnDBasicRules_v0.2.pdf">D&amp;D Basic Rules</a>.
+                    </div>
+                    <div class="item item-text-wrap item-icon-left" ng-hide="characters">
+                        <i class="icon ion-information-circled calm"></i> You don't have any characters! Use the Menu button (top left) or swipe to the right to get started.
+                    </div>
+                </div>
+            </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="templates/manual.html" type="text/ng-template">
+        <ion-view view-title="New Character Sheet">
+            <ion-content>
+                <form class="list" ng-show="showForm">
+                    <div class="item item-divider">
+                        Attendee Info
+                    </div>
+                    <label class="item item-input">
+                        <input type="text" placeholder="First Name" ng-model="attendee.firstname">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Last Name" ng-model="attendee.lastname">
+                    </label>
+                    <div class="item item-divider">
+                        Shirt Size
+                    </div>
+                    <ion-radio ng-repeat="shirtSize in shirtSizes"
+                               ng-value="shirtSize.value"
+                               ng-model="attendee.shirtSize">
+                        {{ shirtSize.text }}
+                    </ion-radio>
+                    <div class="item item-divider">
+                        Lunch
+                    </div>
+                    <ion-toggle ng-model="attendee.vegetarian">
+                        Vegetarian
+                    </ion-toggle>
+                    <div class="padding">
+                        <button class="button button-block" ng-click="submit()">Checkin</button>
+                    </div>
+                </form>
+
+                <div ng-hide="showForm">
+                    <pre ng-bind="attendee | json"></pre>
+                    <!--<a href="#/event/attendees">View attendees</a>-->
+                </div>
+            </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="templates/generator.html" type="text/ng-template">
+        <ion-nav-bar class="bar-calm">
+        </ion-nav-bar>
+        <ion-nav-view name="generatorContent"></ion-nav-view>
+    </script>
+
+    <script id="templates/race.html" type="text/ng-template">
+        <ion-view view-title="Pick a Race">
+            <ion-content class="padding has-footer">
+                <p>
+                    Your choice of race affects many different aspects of
+                    your character. It establishes fundamental qualities that
+                    exist throughout your character’s adventuring career.
+                    When making this decision, keep in mind the kind of
+                    character you want to play. For example, a halfling could
+                    be a good choice for a sneaky rogue, a dwarf makes a
+                    tough warrior, and an elf can be a master of arcane magic. Sometimes
+                    playing against type can be fun, too. Halfling paladins
+                    and mountain dwarf wizards, for example, can be
+                    unusual but memorable characters.
+                </p>
+                <div class="padding" ng-repeat="race in races">
+                    <button class="button button-block button-positive" ui-sref="generator.race.detail({selectedRaceID:race.id})">
+                        {{ race.name }}
+                    </button>
+                </div>
+
+
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <generator-cancel-tab></generator-cancel-tab>
+            </div>
+        </ion-view>
+    </script>
+
+
+    <script id="templates/race.detail.html" type="text/ng-template">
+        <ion-view view-title="{{chosenRace.name}}">
+            <ion-content class="padding has-footer">
+                <div ng-bind-html="chosenRace.description">
+                </div>
+                <div class="card" style="margin-bottom:0">
+                    <div class="item item-divider">
+                        Ability Score Increase
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="asi in chosenRace.ASI">
+                        <info-popup title="{{helper.getASI(asi.id).name}}" text="{{helper.getASI(asi.id).description}}"></info-popup> {{helper.getASI(asi.id).name}} +{{asi.bonus}}
+                    </div>
+                </div>
+                <div class="row" style="padding:0">
+                    <div class="col" style="padding-left:0">
+                        <div class="card">
+                            <div class="item item-divider">
+                                Size <info-popup title="Size" text="Characters of most races are Medium, a size category
+                                    including creatures that are roughly 4 to 8 feet tall.
+                                    Members of a few races are Small (between 2 and 4 feet
+                                    tall), which means that certain rules of the game affect
+                                    them differently. The most important of these rules
+                                    is that Small characters have trouble wielding heavy
+                                    weapons."></info-popup>
+                            </div>
+                            <div class="item item-text-wrap">
+                                {{chosenRace.size}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="padding-right:0">
+                        <div class="card">
+                            <div class="item item-divider">
+                                Speed <info-popup title="Speed" text="Your speed determines how far you can move when traveling and fighting."></info-popup>
+                            </div>
+                            <div class="item item-text-wrap">
+                                {{chosenRace.speed}} feet
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list card" style="margin-top:0">
+                    <div class="item item-divider">
+                        Languages <info-popup title="Languages" text="By virtue of your race, your character can speak, read, and write certain languages."></info-popup>
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="item in chosenRace.languages">
+                        {{helper.getLanguage(item).Language}} <info-popup title="Player's Choice" text="You will be able to pick one language of your choice." ng-if="item == 9"></info-popup>
+                    </div>
+                </div>
+
+                <div class="list card">
+                    <div class="item item-divider">
+                        Racial Traits
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="item in chosenRace.traits">
+                        <strong>{{item.name}}</strong><br />
+                        {{item.description}}
+                    </div>
+                    <div class="item item-text-wrap" ng-show="chosenRace.traits == 0">
+                        None
+                    </div>
+                </div>
+
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <back-tab text="Change Race"></back-tab>
+                <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ng-click="pickRace()">
+                    <i class="icon ion-checkmark"></i>
+                    Choose {{chosenRace.name}}
+                </a>
+            </div>
+        </ion-view>
+    </script>
+    <script id="templates/race.subrace.html" type="text/ng-template">
+        <ion-view view-title="Pick your Subrace">
+            <ion-content class="padding has-footer">
+                <p>
+                    Some races have subraces. Members of a subrace
+                    have the traits of the parent race in addition to the
+                    traits specified for their subrace. Relationships among
+                    subraces vary significantly from race to race and
+                    world to world. In the Dragonlance campaign setting,
+                    for example, mountain dwarves and hill dwarves live
+                    together as different clans of the same people, but in
+                    the Forgotten Realms, they live far apart in separate
+                    kingdoms and call themselves shield dwarves and
+                    gold dwarves, respectively.
+                </p>
+                <div class="padding" ng-repeat="subrace in subraces">
+                    <button class="button button-block button-positive" ui-sref="generator.race.subrace.detail({selectedSubRaceID:subrace.id})">
+                        {{ subrace.name }}
+                    </button>
+                </div>
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <back-tab></back-tab>
+                <generator-cancel-tab></generator-cancel-tab>
+            </div>
+        </ion-view>
+    </script>
+    <script id="templates/race.subrace.detail.html" type="text/ng-template">
+        <ion-view view-title="{{chosenSubRace.name}}">
+            <ion-content class="padding">
+                <div ng-bind-html="chosenSubRace.description">
+                </div>
+                <div class="card" style="margin-bottom:0">
+                    <div class="item item-divider">
+                        Ability Score Increase
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="asi in chosenSubRace.ASI">
+                        <info-popup title="{{helper.getASI(asi.id).name}}" text="{{helper.getASI(asi.id).description}}"></info-popup> {{helper.getASI(asi.id).name}} +{{asi.bonus}}
+                    </div>
+                </div>
+                <div class="list card">
+                    <div class="item item-divider">
+                        Racial Traits
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="item in chosenSubRace.traits">
+                        <strong>{{item.name}}</strong><br />
+                        {{item.description}}
+                    </div>
+                </div>
+
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <back-tab text="Change Subrace"></back-tab>
+                <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.class">
+                    <i class="icon ion-checkmark"></i>
+                    Choose {{chosenSubRace.name}}
+                </a>
+            </div>
+        </ion-view>
+    </script>
+
+    <script id="templates/class.html" type="text/ng-template">
+        <ion-view view-title="Pick your Class">
+            <ion-content class="padding has-footer">
+
+                <p>
+                    Your character receives a number of benefits from
+                    your choice of class. Many of these benefits are class
+                    features—capabilities (including spellcasting) that set
+                    your character apart from members of other classes.
+                    You also gain a number of proficiencies: armor,
+                    weapons, skills, saving throws, and sometimes tools.
+                    Your proficiencies define many of the things your
+                    character can do particularly well, from using certain
+                    weapons to telling a convincing lie.
+                </p>
+                <div class="padding" ng-repeat="class in classes">
+                    <button class="button button-block button-positive" ui-sref="generator.class.detail({selectedClassID:class.id})">
+                        {{ class.Name }}
+                    </button>
+                </div>
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <back-tab></back-tab>
+                <generator-cancel-tab></generator-cancel-tab>
+            </div>
+        </ion-view>
+    </script>
+    <script id="templates/class.detail.html" type="text/ng-template">
+        <ion-view view-title="{{chosenClass.Name}}">
+            <ion-content class="padding has-footer">
+                <div ng-bind-html="chosenSubRace.description">
+                </div>
+                <p>
+                    <img src="{{chosenClass.Icon}}" style="width:25%;float:left;padding-right:1em" />
+                    {{chosenClass.Description}}
+                </p>
+                <div class="list card">
+                    <div class="item item-divider">
+                        Hit Point Dice
+                    </div>
+                    <div class="item item-text-wrap">
+                        1d{{chosenClass.HitDie}} per <span style="text-transform:lowercase">{{chosenClass.Name}}</span> level
+                    </div>
+                    <div class="item item-divider">
+                        Hit Point at 1st Level
+                    </div>
+                    <div class="item item-text-wrap">
+                        {{chosenClass.HitDie}} + your Constitution Modifier
+                    </div>
+                    <div class="item item-divider">
+                        Hit Points at Higher Levels
+                    </div>
+                    <div class="item item-text-wrap">
+                        1d{{chosenClass.HitDie}} (or {{(chosenClass.HitDie / 2) + 1}}) + your Constitution modifier per <span style="text-transform:lowercase">{{chosenClass.Name}}</span> level after 1st
+                    </div>
+                </div>
+
+                <div class="list card">
+                    <div class="item item-divider">
+                        Armor Proficiencies
+                    </div>
+                    <div class="item item-text-wrap">
+                        <!-- type proficiencies first -->
+                        <span ng-repeat="type in armorTypes = (chosenClass.EquipmentTypeProficiencies | inRange:1:4)">{{helper.getEquipmentType(type).name}}<span ng-hide="$last && chosenClass.ArmorProficiencies == 0">, </span></span>
+                        <!-- specific armors -->
+                        <span ng-repeat="armor in chosenClass.ArmorProficiencies">{{helper.getArmor(armor).name}}<span ng-hide="$last">, </span></span>
+                        <span ng-hide="chosenClass.ArmorProficiencies.length > 0 || armorTypes.length > 0">None</span>
+                    </div>
+                    <div class="item item-divider">
+                        Weapon Proficiencies
+                    </div>
+                    <div class="item item-text-wrap">
+                        <!-- type proficiencies first -->
+                        <span ng-repeat="type in weaponTypes = (chosenClass.EquipmentTypeProficiencies | inRange:5:8)">{{helper.getEquipmentType(type).name}}<span ng-hide="$last && chosenClass.WeaponProficiencies.length == 0">, </span></span>
+                        <!-- specific armors -->
+                        <span ng-repeat="weapon in chosenClass.WeaponProficiencies">{{helper.getWeapon(weapon).name}}<span ng-hide="$last">, </span></span>
+                        <span ng-hide="chosenClass.WeaponProficiencies.length > 0 || weaponTypes.length > 0">None</span>
+                    </div>
+                </div>
+
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <back-tab text="Change Class"></back-tab>
+                <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.AbilityScores">
+                    <i class="icon ion-checkmark"></i>
+                    Choose {{chosenClass.Name}}
+                </a>
+            </div>
+        </ion-view>
+    </script>
+</body>
+</html>
