@@ -31,8 +31,8 @@ dndapp.factory('DetailService', function ($filter, DataService) {
         getWeapon: function (weaponID) {
             return ($filter('filter')(DataService.Weapons(), { id: Number(weaponID) }, true))[0];
         },
-        getModifier: function (abilityID) {
-            // calculate the character's modifier for a particular ability score
+        getTool: function (toolID) {
+            return ($filter('filter')(DataService.Tools(), { id: Number(toolID) }, true))[0];
         },
     }
 });
@@ -274,7 +274,13 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [1, 2, 4, 5, 6],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [],
-     "Tools":[],
+     "Tools": [],
+     "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
+     "StartingEquip": [
+         [{ "Type": "Weapon", "id": 7, "ifProficient": false }, { "Type": "Weapon", "id": 32, "ifProficient": true }],
+         [{ "Type": "Armor", "id": 6, "ifProficient": false }, { "Type": "Armor", "id": 2, "ifProficient": false }, { "Type": "Armor", "id": 5, "ifProficient": true }],
+         [{ "Type": "Weapon", "id": 12, "ifProficient": false, "Ammo": {"id":6} }, { "Type": "Armor", "id": 2, "ifProficient": false }],
+     ],
      "Skills": {"HowMany":2,"Choices":[6,11,12,18,9]},
      "Icon": "images/cleric.svg",
      "AbilitySuggestion": "First, Wisdom should be your highest ability score, followed by Strength or Constitution.",
@@ -293,6 +299,8 @@ dndapp.factory('DataService', function () {
      "ArmorProficiencies": [],
      "WeaponProficiencies": [],
      "Tools": [],
+     "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
+     "StartingEquip": [],
      "Skills": { "HowMany": 2, "Choices": [2, 10, 1, 6, 11, 16, 13, 14] },
      "Icon": "images/fighter.svg",
      "AbilitySuggestion": "First, make Strength or Dexterity your highest ability score, depending on whether you want to focus on melee weapons or on archery (or finesse weapons). Your next-highest score should be Constitution.",
@@ -310,6 +318,8 @@ dndapp.factory('DataService', function () {
      "ArmorProficiencies": [],
      "WeaponProficiencies": [35, 23, 27, 29],
      "Tools": [],
+     "StartingWealth": { "DieCount": 4, "Die": 4, "Multiplier": 10 },
+     "StartingEquip": [],
      "Skills": { "HowMany": 4, "Choices": [2, 1, 15, 11, 16, 7, 13, 17, 3, 4] },
      "Icon": "images/rogue.svg",
      "AbilitySuggestion": "First, Dexterity should be your highest ability score. Make Intelligence your next-highest if you want to excel at Investigation. Choose Charisma instead if you plan to emphasize deception and social interaction.",
@@ -326,7 +336,9 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [2, 13, 15, 8, 12],
-     "Tools": [],
+     "Tools": [37],
+     "StartingWealth": {"DieCount":4,"Die":4,"Multiplier": 10},
+     "StartingEquip": [],
      "Skills": { "HowMany": 2, "Choices": [5, 6, 11, 7, 12, 9] },
      "Icon": "images/wizard.svg",
      "AbilitySuggestion": "First, Intelligence should be your highest ability score, followed by Constitution or Dexterity.",
@@ -941,6 +953,982 @@ dndapp.factory('DataService', function () {
       "longrange": 15
   }
             ];
-        }
+        },
+        ItemCategory: function () {
+            return [
+                 { "id": 1, "name": "Ammunition" },
+                 { "id": 2, "name": "Arcane focus" },
+                 { "id": 3, "name": "Druidic focus" },
+                 { "id": 4, "name": "Holy symbol" },
+                 { "id": 5, "name": "Containers" },
+                { "id": 6, "name": "Artisan’s tools" },
+                { "id": 7, "name": "Gaming set" },
+                { "id": 8, "name": "Musical instrument" },
+                { "id": 9, "name": "Vehicle" },
+                { "id": 10, "name": "Trade Goods" },
+            ];
+        },
+        Tools: function () {
+            return [
+  {
+      "id": 1,
+      "name": "Alchemist’s supplies",
+      "Cost": "50 gp",
+      "Weight": "8 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 2,
+      "name": "Brewer’s supplies",
+      "Cost": "20 gp",
+      "Weight": "9 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 3,
+      "name": "Calligrapher's supplies",
+      "Cost": "10 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 4,
+      "name": "Carpenter’s tools",
+      "Cost": "8 gp",
+      "Weight": "6 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 5,
+      "name": "Cartographer’s tools",
+      "Cost": "15 gp",
+      "Weight": "6 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 6,
+      "name": "Cobbler’s tools",
+      "Cost": "5 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 7,
+      "name": "Cook’s utensils",
+      "Cost": "1 gp",
+      "Weight": "8 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 8,
+      "name": "Glassblower’s tools",
+      "Cost": "30 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 9,
+      "name": "Jeweler’s tools",
+      "Cost": "25 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 10,
+      "name": "Leatherworker’s tools",
+      "Cost": "5 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 11,
+      "name": "Mason’s tools",
+      "Cost": "10 gp",
+      "Weight": "8 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 12,
+      "name": "Painter’s supplies",
+      "Cost": "10 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 13,
+      "name": "Potter’s tools",
+      "Cost": "10 gp",
+      "Weight": "3 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 14,
+      "name": "Smith’s tools",
+      "Cost": "20 gp",
+      "Weight": "8 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 15,
+      "name": "Tinker’s tools",
+      "Cost": "50 gp",
+      "Weight": "10 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 16,
+      "name": "Weaver’s tools",
+      "Cost": "1 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 17,
+      "name": "Woodcarver’s tools",
+      "Cost": "1 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 6
+  },
+  {
+      "id": 18,
+      "name": "Disguise kit",
+      "Cost": "25 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 19,
+      "name": "Forgery kit",
+      "Cost": "15 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 20,
+      "name": "Dice set",
+      "Cost": "1 sp",
+      "Weight": "—",
+      "CategoryID": 7
+  },
+  {
+      "id": 21,
+      "name": "Dragonchess set",
+      "Cost": "1 gp",
+      "Weight": "1/2 lb.",
+      "CategoryID": 7
+  },
+  {
+      "id": 22,
+      "name": "Playing card set",
+      "Cost": "5 sp",
+      "Weight": "—",
+      "CategoryID": 7
+  },
+  {
+      "id": 23,
+      "name": "Three-Dragon Ante set",
+      "Cost": "1 gp",
+      "Weight": "—",
+      "CategoryID": 7
+  },
+  {
+      "id": 24,
+      "name": "Herbalism kit",
+      "Cost": "5 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 25,
+      "name": "Bagpipes",
+      "Cost": "30 gp",
+      "Weight": "6 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 26,
+      "name": "Drum",
+      "Cost": "6 gp",
+      "Weight": "3 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 27,
+      "name": "Dulcimer",
+      "Cost": "25 gp",
+      "Weight": "10 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 28,
+      "name": "Flute",
+      "Cost": "2 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 29,
+      "name": "Lute",
+      "Cost": "35 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 30,
+      "name": "Lyre",
+      "Cost": "30 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 31,
+      "name": "Horn",
+      "Cost": "3 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 32,
+      "name": "Pan flute",
+      "Cost": "12 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 33,
+      "name": "Shawm",
+      "Cost": "2 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 34,
+      "name": "Viol",
+      "Cost": "30 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 8
+  },
+  {
+      "id": 35,
+      "name": "Navigator’s tools",
+      "Cost": "25 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 36,
+      "name": "Poisoner’s kit",
+      "Cost": "50 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 37,
+      "name": "Thieves’ tools",
+      "Cost": "25 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  }
+            ];
+        },
+        AdventuringGear: function () {
+            return [
+                [
+  {
+      "id": 1,
+      "name": "Abacus",
+      "Cost": "2 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 2,
+      "name": "Acid (vial)",
+      "Cost": "25 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 3,
+      "name": "Alchemist’s fire (flask)",
+      "Cost": "50 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 4,
+      "name": "Arrows (20)",
+      "Cost": "1 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 1
+  },
+  {
+      "id": 5,
+      "name": "Blowgun needles (50)",
+      "Cost": "1 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 1
+  },
+  {
+      "id": 6,
+      "name": "Crossbow bolts (20)",
+      "Cost": "1 gp",
+      "Weight": "1½ lb.",
+      "CategoryID": 1
+  },
+  {
+      "id": 7,
+      "name": "Sling bullets (20)",
+      "Cost": "4 cp",
+      "Weight": "1½ lb.",
+      "CategoryID": 1
+  },
+  {
+      "id": 8,
+      "name": "Antitoxin (vial)",
+      "Cost": "50 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 9,
+      "name": "Crystal",
+      "Cost": "10 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 2
+  },
+  {
+      "id": 10,
+      "name": "Orb",
+      "Cost": "20 gp",
+      "Weight": "3 lb.",
+      "CategoryID": 2
+  },
+  {
+      "id": 11,
+      "name": "Rod",
+      "Cost": "10 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 2
+  },
+  {
+      "id": 12,
+      "name": "Staff",
+      "Cost": "5 gp",
+      "Weight": "4 lb.",
+      "CategoryID": 2
+  },
+  {
+      "id": 13,
+      "name": "Wand",
+      "Cost": "10 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 2
+  },
+  {
+      "id": 14,
+      "name": "Backpack",
+      "Cost": "2 gp",
+      "Weight": "5 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 15,
+      "name": "Ball bearings (bag of 1,000)",
+      "Cost": "1 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 16,
+      "name": "Barrel",
+      "Cost": "2 gp",
+      "Weight": "70 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 17,
+      "name": "Basket",
+      "Cost": "4 sp",
+      "Weight": "2 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 18,
+      "name": "Bedroll",
+      "Cost": "1 gp",
+      "Weight": "7 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 19,
+      "name": "Bell",
+      "Cost": "1 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 20,
+      "name": "Blanket",
+      "Cost": "5 sp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 21,
+      "name": "Block and tackle",
+      "Cost": "1 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 22,
+      "name": "Book",
+      "Cost": "25 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 23,
+      "name": "Bottle, glass",
+      "Cost": "2 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 24,
+      "name": "Bucket",
+      "Cost": "5 cp",
+      "Weight": "2 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 25,
+      "name": "Caltrops (bag of 20)",
+      "Cost": "1 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 26,
+      "name": "Candle",
+      "Cost": "1 cp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 27,
+      "name": "Case, crossbow bolt",
+      "Cost": "1 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 28,
+      "name": "Case, map or scroll",
+      "Cost": "1 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 29,
+      "name": "Chain (10 feet)",
+      "Cost": "5 gp",
+      "Weight": "10 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 30,
+      "name": "Chalk (1 piece)",
+      "Cost": "1 cp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 31,
+      "name": "Chest",
+      "Cost": "5 gp",
+      "Weight": "25 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 32,
+      "name": "Climber’s kit",
+      "Cost": "25 gp",
+      "Weight": "12 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 33,
+      "name": "Clothes, common",
+      "Cost": "5 sp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 34,
+      "name": "Clothes, costume",
+      "Cost": "5 gp",
+      "Weight": "4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 35,
+      "name": "Clothes, fine",
+      "Cost": "15 gp",
+      "Weight": "6 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 36,
+      "name": "Clothes, traveler’s",
+      "Cost": "2 gp",
+      "Weight": "4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 37,
+      "name": "Component pouch",
+      "Cost": "25 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 38,
+      "name": "Crowbar",
+      "Cost": "2 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 39,
+      "name": "Sprig of mistletoe",
+      "Cost": "1 gp",
+      "Weight": "—",
+      "CategoryID": 3
+  },
+  {
+      "id": 40,
+      "name": "Totem",
+      "Cost": "1 gp",
+      "Weight": "—",
+      "CategoryID": 3
+  },
+  {
+      "id": 41,
+      "name": "Wooden staff",
+      "Cost": "5 gp",
+      "Weight": "4 lb.",
+      "CategoryID": 3
+  },
+  {
+      "id": 42,
+      "name": "Yew wand",
+      "Cost": "10 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 3
+  },
+  {
+      "id": 43,
+      "name": "Fishing tackle",
+      "Cost": "1 gp",
+      "Weight": "4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 44,
+      "name": "Flask or tankard",
+      "Cost": "2 cp",
+      "Weight": "1 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 45,
+      "name": "Grappling hook",
+      "Cost": "2 gp",
+      "Weight": "4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 46,
+      "name": "Hammer",
+      "Cost": "1 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 47,
+      "name": "Hammer, sledge",
+      "Cost": "2 gp",
+      "Weight": "10 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 48,
+      "name": "Healer’s kit",
+      "Cost": "5 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 49,
+      "name": "Amulet",
+      "Cost": "5 gp",
+      "Weight": "1 lb.",
+      "CategoryID": 4
+  },
+  {
+      "id": 50,
+      "name": "Emblem",
+      "Cost": "5 gp",
+      "Weight": "—",
+      "CategoryID": 4
+  },
+  {
+      "id": 51,
+      "name": "Reliquary",
+      "Cost": "5 gp",
+      "Weight": "2 lb.",
+      "CategoryID": 4
+  },
+  {
+      "id": 52,
+      "name": "Holy water (flask)",
+      "Cost": "25 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 53,
+      "name": "Hourglass",
+      "Cost": "25 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 54,
+      "name": "Hunting trap",
+      "Cost": "5 gp",
+      "Weight": "25 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 55,
+      "name": "Ink (1 ounce bottle)",
+      "Cost": "10 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 56,
+      "name": "Ink pen",
+      "Cost": "2 cp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 57,
+      "name": "Jug or pitcher",
+      "Cost": "2 cp",
+      "Weight": "4 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 58,
+      "name": "Ladder (10-foot)",
+      "Cost": "1 sp",
+      "Weight": "25 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 59,
+      "name": "Lamp",
+      "Cost": "5 sp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 60,
+      "name": "Lantern, bullseye",
+      "Cost": "10 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 61,
+      "name": "Lantern, hooded",
+      "Cost": "5 gp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 62,
+      "name": "Lock",
+      "Cost": "10 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 63,
+      "name": "Magnifying glass",
+      "Cost": "100 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 64,
+      "name": "Manacles",
+      "Cost": "2 gp",
+      "Weight": "6 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 65,
+      "name": "Mess kit",
+      "Cost": "2 sp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 66,
+      "name": "Mirror, steel",
+      "Cost": "5 gp",
+      "Weight": "1/2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 67,
+      "name": "Oil (flask)",
+      "Cost": "1 sp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 68,
+      "name": "Paper (one sheet)",
+      "Cost": "2 sp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 69,
+      "name": "Parchment (one sheet)",
+      "Cost": "1 sp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 70,
+      "name": "Perfume (vial)",
+      "Cost": "5 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 71,
+      "name": "Pick, miner’s",
+      "Cost": "2 gp",
+      "Weight": "10 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 72,
+      "name": "Piton",
+      "Cost": "5 cp",
+      "Weight": "1/4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 73,
+      "name": "Poison, basic (vial)",
+      "Cost": "100 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 74,
+      "name": "Pole (10-foot)",
+      "Cost": "5 cp",
+      "Weight": "7 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 75,
+      "name": "Pot, iron",
+      "Cost": "2 gp",
+      "Weight": "10 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 76,
+      "name": "Potion of healing",
+      "Cost": "50 gp",
+      "Weight": "1/2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 77,
+      "name": "Pouch",
+      "Cost": "5 sp",
+      "Weight": "1 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 78,
+      "name": "Quiver",
+      "Cost": "1 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 79,
+      "name": "Ram, portable",
+      "Cost": "4 gp",
+      "Weight": "35 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 80,
+      "name": "Rations (1 day)",
+      "Cost": "5 sp",
+      "Weight": "2 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 81,
+      "name": "Robes",
+      "Cost": "1 gp",
+      "Weight": "4 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 82,
+      "name": "Rope, hempen (50 feet)",
+      "Cost": "1 gp",
+      "Weight": "10 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 83,
+      "name": "Rope, silk (50 feet)",
+      "Cost": "10 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 84,
+      "name": "Sack",
+      "Cost": "1 cp",
+      "Weight": "1/2 lb.",
+      "CategoryID": 5
+  },
+  {
+      "id": 85,
+      "name": "Scale, merchant’s",
+      "Cost": "5 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 86,
+      "name": "Sealing wax",
+      "Cost": "5 sp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 87,
+      "name": "Shovel",
+      "Cost": "2 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 88,
+      "name": "Signal whistle",
+      "Cost": "5 cp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 89,
+      "name": "Signet ring",
+      "Cost": "5 gp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 90,
+      "name": "Soap",
+      "Cost": "2 cp",
+      "Weight": "—",
+      "CategoryID": null
+  },
+  {
+      "id": 91,
+      "name": "Spellbook",
+      "Cost": "50 gp",
+      "Weight": "3 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 92,
+      "name": "Spikes, iron (10)",
+      "Cost": "1 gp",
+      "Weight": "5 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 93,
+      "name": "Spyglass",
+      "Cost": "1,000 gp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 94,
+      "name": "Tent, two-person",
+      "Cost": "2 gp",
+      "Weight": "20 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 95,
+      "name": "Tinderbox",
+      "Cost": "5 sp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 96,
+      "name": "Torch",
+      "Cost": "1 cp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  },
+  {
+      "id": 97,
+      "name": "Vial",
+      "Cost": "1 gp",
+      "Weight": "—",
+      "CategoryID": 5
+  },
+  {
+      "id": 98,
+      "name": "Waterskin",
+      "Cost": "2 sp",
+      "Weight": "5 lb. (full)",
+      "CategoryID": 5
+  },
+  {
+      "id": 99,
+      "name": "Whetstone",
+      "Cost": "1 cp",
+      "Weight": "1 lb.",
+      "CategoryID": null
+  }
+                ]
+            ];
+        },
     }
 });

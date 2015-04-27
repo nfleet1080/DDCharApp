@@ -127,6 +127,18 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
 
                         $scope.helper = DetailService;
                         $scope.Math = window.Math;
+
+                        $scope.resolveOption = function (option) {
+                            switch (option.Type) {
+                                case "Weapon":
+                                    return DetailService.getWeapon(option.id).name;
+                                    break;
+                                case "Armor":
+                                    return DetailService.getArmor(option.id).name;
+                                    break;
+                                default:
+                            }
+                        };
                     }
                 }
             }

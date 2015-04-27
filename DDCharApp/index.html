@@ -274,7 +274,7 @@
     </script>
     <script id="templates/race.subrace.detail.html" type="text/ng-template">
         <ion-view view-title="{{chosenSubRace.name}}">
-            <ion-content class="padding">
+            <ion-content class="padding has-footer">
                 <div ng-bind-html="chosenSubRace.description">
                 </div>
                 <div class="card" style="margin-bottom:0">
@@ -384,6 +384,32 @@
                         <!-- specific armors -->
                         <span ng-repeat="weapon in chosenClass.WeaponProficiencies">{{helper.getWeapon(weapon).name}}<span ng-hide="$last">, </span></span>
                         <span ng-hide="chosenClass.WeaponProficiencies.length > 0 || weaponTypes.length > 0">None</span>
+                    </div>
+                    <div class="item item-divider">
+                        Tool Proficiencies
+                    </div>
+                    <div class="item item-text-wrap">
+                        <span ng-repeat="tool in chosenClass.Tools">{{helper.getTool(tool).name}}<span ng-hide="$last">, </span></span>
+                        <span ng-hide="chosenClass.Tools.length > 0">None</span>
+                    </div>
+                    </div>
+
+                <div class="list card">
+                    <div class="item item-divider">
+                        Starting Wealth
+                    </div>
+                    <div class="item item-text-wrap">
+                        {{chosenClass.StartingWealth.DieCount}}d{{chosenClass.StartingWealth.Die}} x {{chosenClass.StartingWealth.Multiplier}} gp
+                    </div>
+                    <div class="item item-divider">
+                        Starting Equipment
+                    </div>
+                    <div class="item item-text-wrap">
+                        <ul>
+                            <li ng-repeat="item in chosenClass.StartingEquip">
+                                <span ng-repeat="option in item">{{resolveOption(option)}} <span ng-show="option.ifProficient">(if proficient)</span><span ng-hide="$last">, or </span></span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
