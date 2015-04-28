@@ -34,6 +34,44 @@ dndapp.factory('DetailService', function ($filter, DataService) {
         getTool: function (toolID) {
             return ($filter('filter')(DataService.Tools(), { id: Number(toolID) }, true))[0];
         },
+        getGear: function (gearID) {
+            return ($filter('filter')(DataService.AdventuringGear(), { id: Number(gearID) }, true))[0];
+        },
+        getPack: function (packID) {
+            return ($filter('filter')(DataService.EquipmentPacks(), { id: Number(packID) }, true))[0];
+    },
+        getCategory: function (categoryID) {
+            return ($filter('filter')(DataService.ItemCategory(), { id: Number(categoryID) }, true))[0];
+        },
+        formatMoney: function (copperAmount) {
+            /*
+            Coin            cp      sp      ep      gp      pp
+            Copper (cp)     1       1/10    1/50    1/100   1/1,000
+            Silver (sp)     10      1       1/5     1/10    1/100
+            Electrum (ep)   50      5       1       1/2     1/20
+            Gold (gp)       100     10      2       1       1/10
+            Platinum (pp)   1,000   100     20      10      1
+            */
+
+            // excluding uncommon/unusual coin (pp and ep)
+            if (!isNaN(parseFloat(copperAmount))) {
+                // determine the Gold amount
+                equ = copperAmount / 100;
+                var gp = Math.floor(equ);
+                remainder = Math.round((equ % 1) * 100);
+
+                console.log("equ=" + equ);
+                console.log("current remainder : " + remainder);
+
+                // determine the Silver & Copper amount
+                equ = remainder / 10;
+                var sp = Math.floor(equ);
+                var cp = Math.round((equ % 1) * 10);
+
+                return (gp > 0 ? $filter('number')(gp) + " gp " : "") + (sp > 0 ? $filter('number')(sp) + " sp " : "") + (cp > 0 ? $filter('number')(cp) + " cp " : "").trim();
+            }
+        },
+
     }
 });
 dndapp.factory('DataService', function () {
@@ -277,9 +315,12 @@ dndapp.factory('DataService', function () {
      "Tools": [],
      "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [
-         [{ "Type": "Weapon", "id": 7, "ifProficient": false }, { "Type": "Weapon", "id": 32, "ifProficient": true }],
-         [{ "Type": "Armor", "id": 6, "ifProficient": false }, { "Type": "Armor", "id": 2, "ifProficient": false }, { "Type": "Armor", "id": 5, "ifProficient": true }],
-         [{ "Type": "Weapon", "id": 12, "ifProficient": false, "Ammo": {"id":6} }, { "Type": "Armor", "id": 2, "ifProficient": false }],
+         [{ "Type": "Weapon", "id": 7, "ifProficient": false, "AmmoID": null }, { "Type": "Weapon", "id": 32, "ifProficient": true, "AmmoID": null }],
+         [{ "Type": "Armor", "id": 6, "ifProficient": false, "AmmoID": null }, { "Type": "Armor", "id": 2, "ifProficient": false, "AmmoID": null }, { "Type": "Armor", "id": 5, "ifProficient": true, "AmmoID": null }],
+         [{ "Type": "Weapon", "id": 12, "ifProficient": false, "AmmoID": 6 }, { "Type": "Equipment", "id": 5, "ifProficient": false, "AmmoID": null }, { "Type": "Equipment", "id": 6, "ifProficient": false, "AmmoID": null }],
+         [{ "Type": "Pack", "id": 6, "ifProficient": false, "AmmoID": null }, { "Type": "Pack", "id": 5, "ifProficient": false, "AmmoID": null }],
+         [{ "Type": "Armor", "id": 13, "ifProficient": false, "AmmoID": null }],
+         [{ "Type": "Category", "id": 4, "ifProficient": false, "AmmoID": null }],
      ],
      "Skills": {"HowMany":2,"Choices":[6,11,12,18,9]},
      "Icon": "images/cleric.svg",
@@ -365,9 +406,9 @@ dndapp.factory('DataService', function () {
       "id": 1,
       "typeID": 1,
       "name": "Padded",
-      "cost": "5 gp",
+      "cost": 500,
       "armorClass": "11 + Dex modifier",
-      "strength": "—",
+      "strength": null,
       "stealth": "Disadvantage",
       "weight": "8 lb."
   },
@@ -375,49 +416,49 @@ dndapp.factory('DataService', function () {
       "id": 2,
       "typeID": 1,
       "name": "Leather",
-      "cost": "10 gp",
+      "cost": 1000,
       "armorClass": "11 + Dex modifier",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "10 lb."
   },
   {
       "id": 3,
       "typeID": 1,
       "name": "Studded leather",
-      "cost": "45 gp",
+      "cost": 4500,
       "armorClass": "12 + Dex modifier",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "13 lb."
   },
   {
       "id": 4,
       "typeID": 2,
       "name": "Hide",
-      "cost": "10 gp",
+      "cost": 1000,
       "armorClass": "12 + Dex modifier (max 2)",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "12 lb."
   },
   {
       "id": 5,
       "typeID": 2,
       "name": "Chain shirt",
-      "cost": "50 gp",
+      "cost": 5000,
       "armorClass": "13 + Dex modifier (max 2)",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "20 lb."
   },
   {
       "id": 6,
       "typeID": 2,
       "name": "Scale mail",
-      "cost": "50 gp",
+      "cost": 5000,
       "armorClass": "14 + Dex modifier (max 2)",
-      "strength": "—",
+      "strength": null,
       "stealth": "Disadvantage",
       "weight": "45 lb."
   },
@@ -425,19 +466,19 @@ dndapp.factory('DataService', function () {
       "id": 7,
       "typeID": 2,
       "name": "Breastplate",
-      "cost": "400 gp",
+      "cost": 40000,
       "armorClass": "14 + Dex modifier (max 2)",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "20 lb."
   },
   {
       "id": 8,
       "typeID": 2,
       "name": "Half plate",
-      "cost": "750 gp",
+      "cost": 75000,
       "armorClass": "15 + Dex modifier (max 2)",
-      "strength": "—",
+      "strength": null,
       "stealth": "Disadvantage",
       "weight": "40 lb."
   },
@@ -445,9 +486,9 @@ dndapp.factory('DataService', function () {
       "id": 9,
       "typeID": 3,
       "name": "Ring mail",
-      "cost": "30 gp",
+      "cost": 3000,
       "armorClass": "14",
-      "strength": "—",
+      "strength": null,
       "stealth": "Disadvantage",
       "weight": "40 lb."
   },
@@ -455,7 +496,7 @@ dndapp.factory('DataService', function () {
       "id": 10,
       "typeID": 3,
       "name": "Chain mail",
-      "cost": "75 gp",
+      "cost": 7500,
       "armorClass": "16",
       "strength": "Str 13",
       "stealth": "Disadvantage",
@@ -465,7 +506,7 @@ dndapp.factory('DataService', function () {
       "id": 11,
       "typeID": 3,
       "name": "Splint",
-      "cost": "200 gp",
+      "cost": 20000,
       "armorClass": "17",
       "strength": "Str 15",
       "stealth": "Disadvantage",
@@ -475,7 +516,7 @@ dndapp.factory('DataService', function () {
       "id": 12,
       "typeID": 3,
       "name": "Plate",
-      "cost": "1,500 gp",
+      "cost": 150000,
       "armorClass": "18",
       "strength": "Str 15",
       "stealth": "Disadvantage",
@@ -485,10 +526,10 @@ dndapp.factory('DataService', function () {
       "id": 13,
       "typeID": 4,
       "name": "Shield",
-      "cost": "10 gp",
+      "cost": 1000,
       "armorClass": "2",
-      "strength": "—",
-      "stealth": "—",
+      "strength": null,
+      "stealth": null,
       "weight": "6 lb."
   }
             ];
@@ -499,7 +540,7 @@ dndapp.factory('DataService', function () {
       "id": 1,
       "typeID": 5,
       "name": "Club",
-      "cost": "1 sp",
+      "cost": 10,
       "damage": "1d4 bludgeoning",
       "weight": "2 lb.",
       "properties": ["Light"],
@@ -511,7 +552,7 @@ dndapp.factory('DataService', function () {
       "id": 2,
       "typeID": 5,
       "name": "Dagger",
-      "cost": "2 gp",
+      "cost": 200,
       "damage": "1d4 piercing",
       "weight": "1 lb.",
       "properties": ["Finesse", "Light", "Thrown"],
@@ -523,7 +564,7 @@ dndapp.factory('DataService', function () {
       "id": 3,
       "typeID": 5,
       "name": "Greatclub",
-      "cost": "2 sp",
+      "cost": 20,
       "damage": "1d8 bludgeoning",
       "weight": "10 lb.",
       "properties": ["Two-handed"],
@@ -535,7 +576,7 @@ dndapp.factory('DataService', function () {
       "id": 4,
       "typeID": 5,
       "name": "Handaxe",
-      "cost": "5 gp",
+      "cost": 500,
       "damage": "1d6 slashing",
       "weight": "2 lb.",
       "properties": ["Light","Thrown"],
@@ -547,7 +588,7 @@ dndapp.factory('DataService', function () {
       "id": 5,
       "typeID": 5,
       "name": "Javelin",
-      "cost": "5 sp",
+      "cost": 50,
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Thrown"],
@@ -560,7 +601,7 @@ dndapp.factory('DataService', function () {
       "id": 6,
       "typeID": 5,
       "name": "Light hammer",
-      "cost": "2 gp",
+      "cost": 200,
       "damage": "1d4 bludgeoning",
       "weight": "2 lb.",
       "properties": ["Light", "Thrown"],
@@ -572,7 +613,7 @@ dndapp.factory('DataService', function () {
       "id": 7,
       "typeID": 5,
       "name": "Mace",
-      "cost": "5 gp",
+      "cost": 500,
       "damage": "1d6 bludgeoning",
       "weight": "4 lb.",
       "properties": [],
@@ -584,7 +625,7 @@ dndapp.factory('DataService', function () {
       "id": 8,
       "typeID": 5,
       "name": "Quarterstaff",
-      "cost": "2 sp",
+      "cost": 20,
       "damage": "1d6 bludgeoning",
       "weight": "4 lb.",
       "properties": ["Versatile"],
@@ -596,7 +637,7 @@ dndapp.factory('DataService', function () {
       "id": 9,
       "typeID": 5,
       "name": "Sickle",
-      "cost": "1 gp",
+      "cost": 100,
       "damage": "1d4 slashing",
       "weight": "2 lb.",
       "properties": ["Light"],
@@ -608,7 +649,7 @@ dndapp.factory('DataService', function () {
       "id": 10,
       "typeID": 5,
       "name": "Spear",
-      "cost": "1 gp",
+      "cost": 100,
       "damage": "1d6 piercing",
       "weight": "3 lb.",
       "properties": ["Thrown", "Versatile"],
@@ -620,9 +661,9 @@ dndapp.factory('DataService', function () {
       "id": 11,
       "typeID": 5,
       "name": "Unarmed strike",
-      "cost": "—",
+      "cost": null,
       "damage": "1 bludgeoning",
-      "weight": "—",
+      "weight": null,
       "properties": [],
       "Versatile": "",
       "normalrange": 5,
@@ -632,7 +673,7 @@ dndapp.factory('DataService', function () {
       "id": 12,
       "typeID": 6,
       "name": "Light Crossbow",
-      "cost": "25 gp",
+      "cost": 2500,
       "damage": "1d8 piercing",
       "weight": "5 lb.",
       "properties": ["Ammunition", "Loading", "Two-handed"],
@@ -644,7 +685,7 @@ dndapp.factory('DataService', function () {
       "id": 13,
       "typeID": 6,
       "name": "Dart",
-      "cost": "5 cp",
+      "cost": 5,
       "damage": "1d4 piercing",
       "weight": "1/4 lb.",
       "properties": ["Finesse", "Thrown"],
@@ -656,7 +697,7 @@ dndapp.factory('DataService', function () {
       "id": 14,
       "typeID": 6,
       "name": "Shortbow",
-      "cost": "25 gp",
+      "cost": 2500,
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Ammunition", "Two-handed"],
@@ -668,9 +709,9 @@ dndapp.factory('DataService', function () {
       "id": 15,
       "typeID": 6,
       "name": "Sling",
-      "cost": "1 sp",
+      "cost": 10,
       "damage": "1d4 bludgeoning",
-      "weight": "—",
+      "weight": null,
       "properties": ["Ammunition"],
       "Versatile": "",
       "normalrange": 30,
@@ -680,7 +721,7 @@ dndapp.factory('DataService', function () {
       "id": 16,
       "typeID": 7,
       "name": "Battleaxe",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "1d8 slashing",
       "weight": "4 lb.",
       "properties": ["Versatile"],
@@ -692,7 +733,7 @@ dndapp.factory('DataService', function () {
       "id": 17,
       "typeID": 7,
       "name": "Flail",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "1d8 bludgeoning",
       "weight": "2 lb.",
       "properties": [],
@@ -704,7 +745,7 @@ dndapp.factory('DataService', function () {
       "id": 18,
       "typeID": 7,
       "name": "Glaive",
-      "cost": "20 gp",
+      "cost": 2000,
       "damage": "1d10 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
@@ -716,7 +757,7 @@ dndapp.factory('DataService', function () {
       "id": 19,
       "typeID": 7,
       "name": "Greataxe",
-      "cost": "30 gp",
+      "cost": 3000,
       "damage": "1d12 slashing",
       "weight": "7 lb.",
       "properties": ["Heavy", "Two-handed"],
@@ -728,7 +769,7 @@ dndapp.factory('DataService', function () {
       "id": 20,
       "typeID": 7,
       "name": "Greatsword",
-      "cost": "50 gp",
+      "cost": 5000,
       "damage": "2d6 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Two-handed"],
@@ -740,7 +781,7 @@ dndapp.factory('DataService', function () {
       "id": 21,
       "typeID": 7,
       "name": "Halberd",
-      "cost": "20 gp",
+      "cost": 2000,
       "damage": "1d10 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
@@ -752,7 +793,7 @@ dndapp.factory('DataService', function () {
       "id": 22,
       "typeID": 7,
       "name": "Lance",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "1d12 piercing",
       "weight": "6 lb.",
       "properties": ["Reach", "Special"],
@@ -764,7 +805,7 @@ dndapp.factory('DataService', function () {
       "id": 23,
       "typeID": 7,
       "name": "Longsword",
-      "cost": "15 gp",
+      "cost": 1500,
       "damage": "1d8 slashing",
       "weight": "3 lb.",
       "properties": ["Versatile"],
@@ -776,7 +817,7 @@ dndapp.factory('DataService', function () {
       "id": 24,
       "typeID": 7,
       "name": "Maul",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "2d6 bludgeoning",
       "weight": "10 lb.",
       "properties": ["Heavy", "Two-handed"],
@@ -788,7 +829,7 @@ dndapp.factory('DataService', function () {
       "id": 25,
       "typeID": 7,
       "name": "Morningstar",
-      "cost": "15 gp",
+      "cost": 1500,
       "damage": "1d8 piercing",
       "weight": "4 lb.",
       "properties": [],
@@ -800,7 +841,7 @@ dndapp.factory('DataService', function () {
       "id": 26,
       "typeID": 7,
       "name": "Pike",
-      "cost": "5 gp",
+      "cost": 500,
       "damage": "1d10 piercing",
       "weight": "18 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
@@ -812,7 +853,7 @@ dndapp.factory('DataService', function () {
       "id": 27,
       "typeID": 7,
       "name": "Rapier",
-      "cost": "25 gp",
+      "cost": 2500,
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": ["Finesse"],
@@ -824,7 +865,7 @@ dndapp.factory('DataService', function () {
       "id": 28,
       "typeID": 7,
       "name": "Scimitar",
-      "cost": "25 gp",
+      "cost": 2500,
       "damage": "1d6 slashing",
       "weight": "3 lb.",
       "properties": ["Finesse", "Light"],
@@ -836,7 +877,7 @@ dndapp.factory('DataService', function () {
       "id": 29,
       "typeID": 7,
       "name": "Shortsword",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Finesse", "Light"],
@@ -848,7 +889,7 @@ dndapp.factory('DataService', function () {
       "id": 30,
       "typeID": 7,
       "name": "Trident",
-      "cost": "5 gp",
+      "cost": 500,
       "damage": "1d6 piercing",
       "weight": "4 lb.",
       "properties": ["Thrown", "Versatile"],
@@ -860,7 +901,7 @@ dndapp.factory('DataService', function () {
       "id": 31,
       "typeID": 7,
       "name": "War pick",
-      "cost": "5 gp",
+      "cost": 500,
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": [],
@@ -872,7 +913,7 @@ dndapp.factory('DataService', function () {
       "id": 32,
       "typeID": 7,
       "name": "Warhammer",
-      "cost": "15 gp",
+      "cost": 1500,
       "damage": "1d8 bludgeoning",
       "weight": "2 lb.",
       "properties": ["Versatile"],
@@ -884,7 +925,7 @@ dndapp.factory('DataService', function () {
       "id": 33,
       "typeID": 7,
       "name": "Whip",
-      "cost": "2 gp",
+      "cost": 200,
       "damage": "1d4 slashing",
       "weight": "3 lb.",
       "properties": ["Finesse", "Reach"],
@@ -896,7 +937,7 @@ dndapp.factory('DataService', function () {
       "id": 34,
       "typeID": 8,
       "name": "Blowgun",
-      "cost": "10 gp",
+      "cost": 1000,
       "damage": "1 piercing",
       "weight": "1 lb.",
       "properties": ["Ammunition", "Loading"],
@@ -908,7 +949,7 @@ dndapp.factory('DataService', function () {
       "id": 35,
       "typeID": 8,
       "name": "Hand Crossbow",
-      "cost": "75 gp",
+      "cost": 7500,
       "damage": "1d6 piercing",
       "weight": "3 lb.",
       "properties": ["Ammunition", "Light", "Loading"],
@@ -920,7 +961,7 @@ dndapp.factory('DataService', function () {
       "id": 36,
       "typeID": 8,
       "name": "Heavy Crossbow",
-      "cost": "50 gp",
+      "cost": 5000,
       "damage": "1d10 piercing",
       "weight": "18 lb.",
       "properties": ["Ammunition", "Heavy", "Loading", "Two-handed"],
@@ -932,7 +973,7 @@ dndapp.factory('DataService', function () {
       "id": 37,
       "typeID": 8,
       "name": "Longbow",
-      "cost": "50 gp",
+      "cost": 5000,
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": ["Ammunition", "Heavy", "Two-handed"],
@@ -944,8 +985,8 @@ dndapp.factory('DataService', function () {
       "id": 38,
       "typeID": 8,
       "name": "Net",
-      "cost": "1 gp",
-      "damage": "—",
+      "cost": 100,
+      "damage": null,
       "weight": "3 lb.",
       "properties": ["Special", "Thrown"],
       "Versatile": "",
@@ -966,6 +1007,7 @@ dndapp.factory('DataService', function () {
                 { "id": 8, "name": "Musical instrument" },
                 { "id": 9, "name": "Vehicle" },
                 { "id": 10, "name": "Trade Goods" },
+                { "id": 11, "name": "Unlisted" },
             ];
         },
         Tools: function () {
@@ -973,259 +1015,259 @@ dndapp.factory('DataService', function () {
   {
       "id": 1,
       "name": "Alchemist’s supplies",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "8 lb.",
       "CategoryID": 6
   },
   {
       "id": 2,
       "name": "Brewer’s supplies",
-      "Cost": "20 gp",
+      "cost": 2000,
       "Weight": "9 lb.",
       "CategoryID": 6
   },
   {
       "id": 3,
       "name": "Calligrapher's supplies",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 4,
       "name": "Carpenter’s tools",
-      "Cost": "8 gp",
+      "cost": 800,
       "Weight": "6 lb.",
       "CategoryID": 6
   },
   {
       "id": 5,
       "name": "Cartographer’s tools",
-      "Cost": "15 gp",
+      "cost": 1500,
       "Weight": "6 lb.",
       "CategoryID": 6
   },
   {
       "id": 6,
       "name": "Cobbler’s tools",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 7,
       "name": "Cook’s utensils",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "8 lb.",
       "CategoryID": 6
   },
   {
       "id": 8,
       "name": "Glassblower’s tools",
-      "Cost": "30 gp",
+      "cost": 3000,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 9,
       "name": "Jeweler’s tools",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "2 lb.",
       "CategoryID": 6
   },
   {
       "id": 10,
       "name": "Leatherworker’s tools",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 11,
       "name": "Mason’s tools",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "8 lb.",
       "CategoryID": 6
   },
   {
       "id": 12,
       "name": "Painter’s supplies",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 13,
       "name": "Potter’s tools",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "3 lb.",
       "CategoryID": 6
   },
   {
       "id": 14,
       "name": "Smith’s tools",
-      "Cost": "20 gp",
+      "cost": 2000,
       "Weight": "8 lb.",
       "CategoryID": 6
   },
   {
       "id": 15,
       "name": "Tinker’s tools",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "10 lb.",
       "CategoryID": 6
   },
   {
       "id": 16,
       "name": "Weaver’s tools",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 17,
       "name": "Woodcarver’s tools",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "5 lb.",
       "CategoryID": 6
   },
   {
       "id": 18,
       "name": "Disguise kit",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 19,
       "name": "Forgery kit",
-      "Cost": "15 gp",
+      "cost": 1500,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 20,
       "name": "Dice set",
-      "Cost": "1 sp",
-      "Weight": "—",
+      "cost": 10,
+      "Weight": null,
       "CategoryID": 7
   },
   {
       "id": 21,
       "name": "Dragonchess set",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1/2 lb.",
       "CategoryID": 7
   },
   {
       "id": 22,
       "name": "Playing card set",
-      "Cost": "5 sp",
-      "Weight": "—",
+      "cost": 50,
+      "Weight": null,
       "CategoryID": 7
   },
   {
       "id": 23,
       "name": "Three-Dragon Ante set",
-      "Cost": "1 gp",
-      "Weight": "—",
+      "cost": 100,
+      "Weight": null,
       "CategoryID": 7
   },
   {
       "id": 24,
       "name": "Herbalism kit",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 25,
       "name": "Bagpipes",
-      "Cost": "30 gp",
+      "cost": 3000,
       "Weight": "6 lb.",
       "CategoryID": 8
   },
   {
       "id": 26,
       "name": "Drum",
-      "Cost": "6 gp",
+      "cost": 600,
       "Weight": "3 lb.",
       "CategoryID": 8
   },
   {
       "id": 27,
       "name": "Dulcimer",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "10 lb.",
       "CategoryID": 8
   },
   {
       "id": 28,
       "name": "Flute",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "1 lb.",
       "CategoryID": 8
   },
   {
       "id": 29,
       "name": "Lute",
-      "Cost": "35 gp",
+      "cost": 3500,
       "Weight": "2 lb.",
       "CategoryID": 8
   },
   {
       "id": 30,
       "name": "Lyre",
-      "Cost": "30 gp",
+      "cost": 3000,
       "Weight": "2 lb.",
       "CategoryID": 8
   },
   {
       "id": 31,
       "name": "Horn",
-      "Cost": "3 gp",
+      "cost": 300,
       "Weight": "2 lb.",
       "CategoryID": 8
   },
   {
       "id": 32,
       "name": "Pan flute",
-      "Cost": "12 gp",
+      "cost": 1200,
       "Weight": "2 lb.",
       "CategoryID": 8
   },
   {
       "id": 33,
       "name": "Shawm",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "1 lb.",
       "CategoryID": 8
   },
   {
       "id": 34,
       "name": "Viol",
-      "Cost": "30 gp",
+      "cost": 3000,
       "Weight": "1 lb.",
       "CategoryID": 8
   },
   {
       "id": 35,
       "name": "Navigator’s tools",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 36,
       "name": "Poisoner’s kit",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 37,
       "name": "Thieves’ tools",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "1 lb.",
       "CategoryID": null
   }
@@ -1233,701 +1275,888 @@ dndapp.factory('DataService', function () {
         },
         AdventuringGear: function () {
             return [
-                [
+                
   {
       "id": 1,
       "name": "Abacus",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 2,
       "name": "Acid (vial)",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 3,
       "name": "Alchemist’s fire (flask)",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 4,
       "name": "Arrows (20)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1 lb.",
       "CategoryID": 1
   },
   {
       "id": 5,
       "name": "Blowgun needles (50)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1 lb.",
       "CategoryID": 1
   },
   {
       "id": 6,
       "name": "Crossbow bolts (20)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1½ lb.",
       "CategoryID": 1
   },
   {
       "id": 7,
       "name": "Sling bullets (20)",
-      "Cost": "4 cp",
+      "cost": 4,
       "Weight": "1½ lb.",
       "CategoryID": 1
   },
   {
       "id": 8,
       "name": "Antitoxin (vial)",
-      "Cost": "50 gp",
-      "Weight": "—",
+      "cost": 5000,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 9,
       "name": "Crystal",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "1 lb.",
       "CategoryID": 2
   },
   {
       "id": 10,
       "name": "Orb",
-      "Cost": "20 gp",
+      "cost": 2000,
       "Weight": "3 lb.",
       "CategoryID": 2
   },
   {
       "id": 11,
       "name": "Rod",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "2 lb.",
       "CategoryID": 2
   },
   {
       "id": 12,
       "name": "Staff",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "4 lb.",
       "CategoryID": 2
   },
   {
       "id": 13,
       "name": "Wand",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "1 lb.",
       "CategoryID": 2
   },
   {
       "id": 14,
       "name": "Backpack",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "5 lb.",
       "CategoryID": 5
   },
   {
       "id": 15,
       "name": "Ball bearings (bag of 1,000)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 16,
       "name": "Barrel",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "70 lb.",
       "CategoryID": 5
   },
   {
       "id": 17,
       "name": "Basket",
-      "Cost": "4 sp",
+      "cost": 40,
       "Weight": "2 lb.",
       "CategoryID": 5
   },
   {
       "id": 18,
       "name": "Bedroll",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "7 lb.",
       "CategoryID": null
   },
   {
       "id": 19,
       "name": "Bell",
-      "Cost": "1 gp",
-      "Weight": "—",
+      "cost": 100,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 20,
       "name": "Blanket",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 21,
       "name": "Block and tackle",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 22,
       "name": "Book",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 23,
       "name": "Bottle, glass",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "2 lb.",
       "CategoryID": 5
   },
   {
       "id": 24,
       "name": "Bucket",
-      "Cost": "5 cp",
+      "cost": 5,
       "Weight": "2 lb.",
       "CategoryID": 5
   },
   {
       "id": 25,
       "name": "Caltrops (bag of 20)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 26,
       "name": "Candle",
-      "Cost": "1 cp",
-      "Weight": "—",
+      "cost": 1,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 27,
       "name": "Case, crossbow bolt",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 28,
       "name": "Case, map or scroll",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 29,
       "name": "Chain (10 feet)",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "10 lb.",
       "CategoryID": null
   },
   {
       "id": 30,
       "name": "Chalk (1 piece)",
-      "Cost": "1 cp",
-      "Weight": "—",
+      "cost": 1,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 31,
       "name": "Chest",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "25 lb.",
       "CategoryID": 5
   },
   {
       "id": 32,
       "name": "Climber’s kit",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "12 lb.",
       "CategoryID": null
   },
   {
       "id": 33,
       "name": "Clothes, common",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 34,
       "name": "Clothes, costume",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "4 lb.",
       "CategoryID": null
   },
   {
       "id": 35,
       "name": "Clothes, fine",
-      "Cost": "15 gp",
+      "cost": 1500,
       "Weight": "6 lb.",
       "CategoryID": null
   },
   {
       "id": 36,
       "name": "Clothes, traveler’s",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "4 lb.",
       "CategoryID": null
   },
   {
       "id": 37,
       "name": "Component pouch",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 38,
       "name": "Crowbar",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 39,
       "name": "Sprig of mistletoe",
-      "Cost": "1 gp",
-      "Weight": "—",
+      "cost": 100,
+      "Weight": null,
       "CategoryID": 3
   },
   {
       "id": 40,
       "name": "Totem",
-      "Cost": "1 gp",
-      "Weight": "—",
+      "cost": 100,
+      "Weight": null,
       "CategoryID": 3
   },
   {
       "id": 41,
       "name": "Wooden staff",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "4 lb.",
       "CategoryID": 3
   },
   {
       "id": 42,
       "name": "Yew wand",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "1 lb.",
       "CategoryID": 3
   },
   {
       "id": 43,
       "name": "Fishing tackle",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "4 lb.",
       "CategoryID": null
   },
   {
       "id": 44,
       "name": "Flask or tankard",
-      "Cost": "2 cp",
+      "cost": 2,
       "Weight": "1 lb.",
       "CategoryID": 5
   },
   {
       "id": 45,
       "name": "Grappling hook",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "4 lb.",
       "CategoryID": null
   },
   {
       "id": 46,
       "name": "Hammer",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 47,
       "name": "Hammer, sledge",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "10 lb.",
       "CategoryID": null
   },
   {
       "id": 48,
       "name": "Healer’s kit",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 49,
       "name": "Amulet",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "1 lb.",
       "CategoryID": 4
   },
   {
       "id": 50,
       "name": "Emblem",
-      "Cost": "5 gp",
-      "Weight": "—",
+      "cost": 500,
+      "Weight": null,
       "CategoryID": 4
   },
   {
       "id": 51,
       "name": "Reliquary",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "2 lb.",
       "CategoryID": 4
   },
   {
       "id": 52,
       "name": "Holy water (flask)",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 53,
       "name": "Hourglass",
-      "Cost": "25 gp",
+      "cost": 2500,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 54,
       "name": "Hunting trap",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "25 lb.",
       "CategoryID": null
   },
   {
       "id": 55,
       "name": "Ink (1 ounce bottle)",
-      "Cost": "10 gp",
-      "Weight": "—",
+      "cost": 1000,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 56,
       "name": "Ink pen",
-      "Cost": "2 cp",
-      "Weight": "—",
+      "cost": 2,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 57,
       "name": "Jug or pitcher",
-      "Cost": "2 cp",
+      "cost": 2,
       "Weight": "4 lb.",
       "CategoryID": 5
   },
   {
       "id": 58,
       "name": "Ladder (10-foot)",
-      "Cost": "1 sp",
+      "cost": 10,
       "Weight": "25 lb.",
       "CategoryID": null
   },
   {
       "id": 59,
       "name": "Lamp",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 60,
       "name": "Lantern, bullseye",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 61,
       "name": "Lantern, hooded",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 62,
       "name": "Lock",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 63,
       "name": "Magnifying glass",
-      "Cost": "100 gp",
-      "Weight": "—",
+      "cost": 10000,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 64,
       "name": "Manacles",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "6 lb.",
       "CategoryID": null
   },
   {
       "id": 65,
       "name": "Mess kit",
-      "Cost": "2 sp",
+      "cost": 20,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 66,
       "name": "Mirror, steel",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "1/2 lb.",
       "CategoryID": null
   },
   {
       "id": 67,
       "name": "Oil (flask)",
-      "Cost": "1 sp",
+      "cost": 10,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 68,
       "name": "Paper (one sheet)",
-      "Cost": "2 sp",
-      "Weight": "—",
+      "cost": 20,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 69,
       "name": "Parchment (one sheet)",
-      "Cost": "1 sp",
-      "Weight": "—",
+      "cost": 10,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 70,
       "name": "Perfume (vial)",
-      "Cost": "5 gp",
-      "Weight": "—",
+      "cost": 500,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 71,
       "name": "Pick, miner’s",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "10 lb.",
       "CategoryID": null
   },
   {
       "id": 72,
       "name": "Piton",
-      "Cost": "5 cp",
+      "cost": 5,
       "Weight": "1/4 lb.",
       "CategoryID": null
   },
   {
       "id": 73,
       "name": "Poison, basic (vial)",
-      "Cost": "100 gp",
-      "Weight": "—",
+      "cost": 10000,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 74,
       "name": "Pole (10-foot)",
-      "Cost": "5 cp",
+      "cost": 5,
       "Weight": "7 lb.",
       "CategoryID": null
   },
   {
       "id": 75,
       "name": "Pot, iron",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "10 lb.",
       "CategoryID": 5
   },
   {
       "id": 76,
       "name": "Potion of healing",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "1/2 lb.",
       "CategoryID": null
   },
   {
       "id": 77,
       "name": "Pouch",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "1 lb.",
       "CategoryID": 5
   },
   {
       "id": 78,
       "name": "Quiver",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 79,
       "name": "Ram, portable",
-      "Cost": "4 gp",
+      "cost": 400,
       "Weight": "35 lb.",
       "CategoryID": null
   },
   {
       "id": 80,
       "name": "Rations (1 day)",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "2 lb.",
       "CategoryID": null
   },
   {
       "id": 81,
       "name": "Robes",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "4 lb.",
       "CategoryID": null
   },
   {
       "id": 82,
       "name": "Rope, hempen (50 feet)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "10 lb.",
       "CategoryID": null
   },
   {
       "id": 83,
       "name": "Rope, silk (50 feet)",
-      "Cost": "10 gp",
+      "cost": 1000,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 84,
       "name": "Sack",
-      "Cost": "1 cp",
+      "cost": 1,
       "Weight": "1/2 lb.",
       "CategoryID": 5
   },
   {
       "id": 85,
       "name": "Scale, merchant’s",
-      "Cost": "5 gp",
+      "cost": 500,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 86,
       "name": "Sealing wax",
-      "Cost": "5 sp",
-      "Weight": "—",
+      "cost": 50,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 87,
       "name": "Shovel",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 88,
       "name": "Signal whistle",
-      "Cost": "5 cp",
-      "Weight": "—",
+      "cost": 5,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 89,
       "name": "Signet ring",
-      "Cost": "5 gp",
-      "Weight": "—",
+      "cost": 500,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 90,
       "name": "Soap",
-      "Cost": "2 cp",
-      "Weight": "—",
+      "cost": 2,
+      "Weight": null,
       "CategoryID": null
   },
   {
       "id": 91,
       "name": "Spellbook",
-      "Cost": "50 gp",
+      "cost": 5000,
       "Weight": "3 lb.",
       "CategoryID": null
   },
   {
       "id": 92,
       "name": "Spikes, iron (10)",
-      "Cost": "1 gp",
+      "cost": 100,
       "Weight": "5 lb.",
       "CategoryID": null
   },
   {
       "id": 93,
       "name": "Spyglass",
-      "Cost": "1,000 gp",
+      "cost": 100000,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 94,
       "name": "Tent, two-person",
-      "Cost": "2 gp",
+      "cost": 200,
       "Weight": "20 lb.",
       "CategoryID": null
   },
   {
       "id": 95,
       "name": "Tinderbox",
-      "Cost": "5 sp",
+      "cost": 50,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 96,
       "name": "Torch",
-      "Cost": "1 cp",
+      "cost": 1,
       "Weight": "1 lb.",
       "CategoryID": null
   },
   {
       "id": 97,
       "name": "Vial",
-      "Cost": "1 gp",
-      "Weight": "—",
+      "cost": 100,
+      "Weight": null,
       "CategoryID": 5
   },
   {
       "id": 98,
       "name": "Waterskin",
-      "Cost": "2 sp",
+      "cost": 20,
       "Weight": "5 lb. (full)",
       "CategoryID": 5
   },
   {
       "id": 99,
       "name": "Whetstone",
-      "Cost": "1 cp",
+      "cost": 1,
       "Weight": "1 lb.",
       "CategoryID": null
-  }
+  },
+  {
+      "id": 100,
+      "name": "10 feet of string",
+      "Cost": null,
+      "Weight": null,
+      "CategoryID": 11
+  },
+    {
+        "id": 101,
+        "name": "Alms box",
+        "Cost": null,
+        "Weight": null,
+        "CategoryID": 11
+    },
+                {
+                    "id": 102,
+                    "name": "Incense (block)",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+                {
+                    "id": 103,
+                    "name": "Censer",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+                {
+                    "id": 104,
+                    "name": "Vestments",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+                {
+                    "id": 105,
+                    "name": "Book of lore",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+                {
+                    "id": 106,
+                    "name": "Little sand bag",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+                {
+                    "id": 107,
+                    "name": "Small knife",
+                    "Cost": null,
+                    "Weight": null,
+                    "CategoryID": 11
+                },
+            ];
+        },
+        EquipmentPacks: function () {
+            return [
+                {
+                    "id":1,
+                    "name":"Burglar’s Pack",
+                    "cost": 1600,
+                    "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":15,"qty":1},  // ball berrings
+                        {"itemID":100,"qty":1}, // string
+                        {"itemID":19,"qty":1},  // bell
+                        {"itemID":26,"qty":5},  // candles
+                        {"itemID":38,"qty":1},  // crowbar
+                        {"itemID":46,"qty":1},  // hammer
+                        {"itemID":72,"qty":10}, // piton
+                        {"itemID":61,"qty":1},  // hooded lantern
+                        {"itemID":67,"qty":2},  // flasks of oil
+                        {"itemID":80,"qty":5},  // rations
+                        {"itemID":95,"qty":1},  // tinderbox
+                        {"itemID":98,"qty":1},  // waterskin
+                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                    ]
+                },
+            {
+                "id":2,
+                "name":"Diplomat’s Pack",
+                "cost": 3900,
+                "contents":[
+                        {"itemID":31,"qty":1},  // chest
+                        {"itemID":28,"qty":2},  // cases for maps and scrolls
+                        {"itemID":35,"qty":1},  // fine clothes
+                        {"itemID":19,"qty":1},  // bell
+                        {"itemID":55,"qty":1},  // bottle of ink
+                        {"itemID":56,"qty":1},  // ink pen
+                        {"itemID":59,"qty":1},  // lamp
+                        {"itemID":67,"qty":2},  // flasks of oil 
+                        {"itemID":68,"qty":5},  // sheets of paper
+                        {"itemID":70,"qty":1},  // vial of perfume
+                        {"itemID":86,"qty":1},  // sealing wax
+                        {"itemID":90,"qty":1},  // soap
                 ]
+            },
+            {
+                "id":3,
+                "name":"Dungeoneer’s Pack",
+                "cost": 1200,
+                "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":38,"qty":1},  // crowbar 
+                        {"itemID":46,"qty":1},  // hammer
+                        {"itemID":72,"qty":10}, // piton
+                        {"itemID":96,"qty":10}, // torches
+                        {"itemID":95,"qty":1},  // tinderbox
+                        {"itemID":80,"qty":10}, // rations
+                        {"itemID":98,"qty":1},  // waterskin
+                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                ]
+            },
+            {
+                "id":4,
+                "name":"Entertainer’s Pack",
+                "cost": 4000,
+                "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":18,"qty":1},  // bedroll 
+                        {"itemID":34,"qty":2},  // costumes
+                        {"itemID":26,"qty":5},  // candles
+                        {"itemID":80,"qty":5},  // rations
+                        {"itemID":98,"qty":1},  // waterskin 
+                        {"toolID":18,"qty":1},  // disguise kit
+                ]
+            },
+            {
+                "id":5,
+                "name":"Explorer’s Pack",
+                "cost": 1000,
+                "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":18,"qty":1},  // bedroll 
+                        {"itemID":65,"qty":1},  // mess kit
+                        {"itemID":95,"qty":1},  // tinderbox
+                        {"itemID":96,"qty":10}, // torches
+                        {"itemID":80,"qty":10}, // rations
+                        {"itemID":98,"qty":1},  // waterskin
+                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                ]
+            },
+            {
+                "id":6,
+                "name":"Priest’s Pack",
+                "cost": 1000,
+                "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":20,"qty":1},  // blanket 
+                        {"itemID":26,"qty":10}, // candles
+                        {"itemID":95,"qty":1},  // tinderbox
+                        {"itemID":101,"qty":1}, // alms box
+                        {"itemID":102,"qty":2}, // blocks of incense
+                        {"itemID":103,"qty":1}, // censer
+                        {"itemID":104,"qty":1}, // vestments
+                        {"itemID":80,"qty":2},  // rations
+                        {"itemID":98,"qty":1},  // waterskin
+                ]
+            },
+            {
+                "id":7,
+                "name":"Scholar’s Pack",
+                "cost": 4000,
+                "contents":[
+                        {"itemID":14,"qty":1},  // backpack
+                        {"itemID":105,"qty":1}, // book of lore
+                        {"itemID":55,"qty":1},  // bottle of ink
+                        {"itemID":56,"qty":1},  // ink pen
+                        {"itemID":69,"qty":10}, // sheets of parchment
+                        {"itemID":106,"qty":1}, // little bag of sand
+                        {"itemID":107,"qty":1}, // small knife
+                ]
+            },
+
+            ];
+        },
+        DivineDomains: function(){
+            return [
+                {"id":1,"name":"Knowledge"},
+                {"id":2,"name":"Life"},
+                {"id":3,"name":"Light"},
+                {"id":4,"name":"Nature"},
+                {"id":5,"name":"Tempest"},
+                {"id":6,"name":"Trickery"},
+                {"id":7,"name":"War"},
             ];
         },
     }

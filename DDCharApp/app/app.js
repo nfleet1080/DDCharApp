@@ -69,6 +69,9 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                                 $state.go('generator.class');
                             }
                         };
+
+                        // testing
+                        console.info(DetailService.formatMoney(278 * 41 + 5));
                     }
                 }
             }
@@ -136,7 +139,27 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                                 case "Armor":
                                     return DetailService.getArmor(option.id).name;
                                     break;
+                                case "Equipment":
+                                    var s = DetailService.getEquipmentType(option.id).name;
+                                    if (s == "Simple Melee Weapons") {
+                                        s = "any simple melee weapon";
+                                    } else if (s == "Simple Ranged Weapons") {
+                                        s = "any simple ranged weapon";
+                                    }
+                                    return s;
+                                    break;
+                                case "Pack":
+                                    return DetailService.getPack(option.id).name;
+                                    break;
+                                case "Category":
+                                    return DetailService.getCategory(option.id).name;
+                                    break;
                                 default:
+                            }
+                        };
+                        $scope.resolveAmmo = function (ammoID) {
+                            if (ammoID) {
+                                return DetailService.getGear(ammoID).name;
                             }
                         };
                     }

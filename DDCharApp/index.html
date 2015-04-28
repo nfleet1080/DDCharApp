@@ -394,20 +394,21 @@
                     </div>
                     </div>
 
+                <p>Upon character creation you will be able to select either equipment based off both your class and background <strong style="text-transform:uppercase;text-decoration:underline">or</strong> a number of gold pieces based on your class to spend on items.</p>
                 <div class="list card">
                     <div class="item item-divider">
-                        Starting Wealth
+                       {{chosenClass.Name}} Starting Wealth
                     </div>
                     <div class="item item-text-wrap">
                         {{chosenClass.StartingWealth.DieCount}}d{{chosenClass.StartingWealth.Die}} x {{chosenClass.StartingWealth.Multiplier}} gp
                     </div>
                     <div class="item item-divider">
-                        Starting Equipment
+                       {{chosenClass.Name}} Starting Equipment
                     </div>
                     <div class="item item-text-wrap">
-                        <ul>
-                            <li ng-repeat="item in chosenClass.StartingEquip">
-                                <span ng-repeat="option in item">{{resolveOption(option)}} <span ng-show="option.ifProficient">(if proficient)</span><span ng-hide="$last">, or </span></span>
+                        <ul style="padding-left:1em">
+                            <li ng-repeat="item in chosenClass.StartingEquip" style="list-style-type:disc">
+                                <span ng-repeat="option in item">{{resolveOption(option)}}<span ng-show="option.AmmoID"> and {{resolveAmmo(option.AmmoID)}}</span><span ng-show="option.ifProficient"> (if proficient)</span><span ng-hide="$last"> or </span></span>
                             </li>
                         </ul>
                     </div>
