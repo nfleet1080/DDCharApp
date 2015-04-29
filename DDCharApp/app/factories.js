@@ -498,7 +498,7 @@ dndapp.factory('DataService', function () {
       "name": "Chain mail",
       "cost": 7500,
       "armorClass": "16",
-      "strength": "Str 13",
+      "strength": 13,
       "stealth": "Disadvantage",
       "weight": "55 lb."
   },
@@ -508,7 +508,7 @@ dndapp.factory('DataService', function () {
       "name": "Splint",
       "cost": 20000,
       "armorClass": "17",
-      "strength": "Str 15",
+      "strength": 15,
       "stealth": "Disadvantage",
       "weight": "60 lb."
   },
@@ -518,7 +518,7 @@ dndapp.factory('DataService', function () {
       "name": "Plate",
       "cost": 150000,
       "armorClass": "18",
-      "strength": "Str 15",
+      "strength": 15,
       "stealth": "Disadvantage",
       "weight": "65 lb."
   },
@@ -527,7 +527,7 @@ dndapp.factory('DataService', function () {
       "typeID": 4,
       "name": "Shield",
       "cost": 1000,
-      "armorClass": "2",
+      "armorClass": 2,
       "strength": null,
       "stealth": null,
       "weight": "6 lb."
@@ -544,7 +544,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 bludgeoning",
       "weight": "2 lb.",
       "properties": ["Light"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange":5
             },
@@ -556,7 +556,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 piercing",
       "weight": "1 lb.",
       "properties": ["Finesse", "Light", "Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 20,
       "longrange": 60
   },
@@ -568,7 +568,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 bludgeoning",
       "weight": "10 lb.",
       "properties": ["Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -580,7 +580,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 slashing",
       "weight": "2 lb.",
       "properties": ["Light","Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 20,
       "longrange":60
   },
@@ -592,7 +592,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 30,
       "longrange":120
 
@@ -605,7 +605,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 bludgeoning",
       "weight": "2 lb.",
       "properties": ["Light", "Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 20,
       "longrange":60
   },
@@ -617,7 +617,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 bludgeoning",
       "weight": "4 lb.",
       "properties": [],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -641,7 +641,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 slashing",
       "weight": "2 lb.",
       "properties": ["Light"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -665,7 +665,7 @@ dndapp.factory('DataService', function () {
       "damage": "1 bludgeoning",
       "weight": null,
       "properties": [],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -677,7 +677,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 piercing",
       "weight": "5 lb.",
       "properties": ["Ammunition", "Loading", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 80,
       "longrange": 320
   },
@@ -689,7 +689,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 piercing",
       "weight": "1/4 lb.",
       "properties": ["Finesse", "Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 20,
       "longrange": 60
   },
@@ -701,7 +701,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Ammunition", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 80,
       "longrange": 320
   },
@@ -713,7 +713,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 bludgeoning",
       "weight": null,
       "properties": ["Ammunition"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 30,
       "longrange": 120
   },
@@ -737,7 +737,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 bludgeoning",
       "weight": "2 lb.",
       "properties": [],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -749,7 +749,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d10 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 10,
       "longrange": 10
   },
@@ -761,7 +761,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d12 slashing",
       "weight": "7 lb.",
       "properties": ["Heavy", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -773,7 +773,7 @@ dndapp.factory('DataService', function () {
       "damage": "2d6 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -785,7 +785,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d10 slashing",
       "weight": "6 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 10,
       "longrange": 10
   },
@@ -797,7 +797,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d12 piercing",
       "weight": "6 lb.",
       "properties": ["Reach", "Special"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 10
   },
@@ -821,7 +821,7 @@ dndapp.factory('DataService', function () {
       "damage": "2d6 bludgeoning",
       "weight": "10 lb.",
       "properties": ["Heavy", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -833,7 +833,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 piercing",
       "weight": "4 lb.",
       "properties": [],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -845,7 +845,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d10 piercing",
       "weight": "18 lb.",
       "properties": ["Heavy", "Reach", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 10,
       "longrange": 10
   },
@@ -857,7 +857,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": ["Finesse"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -869,7 +869,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 slashing",
       "weight": "3 lb.",
       "properties": ["Finesse", "Light"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -881,7 +881,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 piercing",
       "weight": "2 lb.",
       "properties": ["Finesse", "Light"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -905,7 +905,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": [],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 5
   },
@@ -929,7 +929,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d4 slashing",
       "weight": "3 lb.",
       "properties": ["Finesse", "Reach"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 10,
       "longrange": 10
   },
@@ -941,7 +941,7 @@ dndapp.factory('DataService', function () {
       "damage": "1 piercing",
       "weight": "1 lb.",
       "properties": ["Ammunition", "Loading"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 25,
       "longrange": 100
   },
@@ -953,7 +953,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d6 piercing",
       "weight": "3 lb.",
       "properties": ["Ammunition", "Light", "Loading"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 30,
       "longrange": 120
   },
@@ -965,7 +965,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d10 piercing",
       "weight": "18 lb.",
       "properties": ["Ammunition", "Heavy", "Loading", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 100,
       "longrange": 400
   },
@@ -977,7 +977,7 @@ dndapp.factory('DataService', function () {
       "damage": "1d8 piercing",
       "weight": "2 lb.",
       "properties": ["Ammunition", "Heavy", "Two-handed"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 150,
       "longrange": 600
   },
@@ -989,7 +989,7 @@ dndapp.factory('DataService', function () {
       "damage": null,
       "weight": "3 lb.",
       "properties": ["Special", "Thrown"],
-      "Versatile": "",
+      "Versatile": null,
       "normalrange": 5,
       "longrange": 15
   }
@@ -2157,6 +2157,18 @@ dndapp.factory('DataService', function () {
                 {"id":5,"name":"Tempest"},
                 {"id":6,"name":"Trickery"},
                 {"id":7,"name":"War"},
+            ];
+        },
+        Dieties: function () {
+            return [
+                {
+                    "id": 1,
+                    "pantheon": "The Forgotten Realms",
+                    "name": "",
+                    "Alignment": "",
+                    "SuggestedDomains":[],
+                    "Symbol":"",
+                },
             ];
         },
     }
