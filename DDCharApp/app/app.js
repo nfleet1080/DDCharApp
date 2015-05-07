@@ -43,8 +43,10 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
             views: {
                 'generatorContent': {
                     templateUrl: "templates/race.html",
-                    controller: function ($scope, DataService) {
+                    controller: function ($scope, DataService, DetailService) {
                         $scope.races = DataService.Races();
+                        $scope.selectedRace = 1;
+                        $scope.helper = DetailService;
                     }
                 }
             }
@@ -71,7 +73,7 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                         };
 
                         // testing
-                        console.info(DetailService.formatMoney(278 * 41 + 5));
+                        //console.info(DetailService.formatMoney(278 * 41 + 5));
                     }
                 }
             }
@@ -83,8 +85,10 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                 'generatorContent': {
                     templateUrl: "templates/race.subrace.html",
                     controller: function ($ionicHistory, $scope, $rootScope, $filter, DetailService) {
+                        $scope.helper = DetailService;
                         // grab sub race data for selected race
                         $scope.subraces = DetailService.getRace($rootScope.TempCharacter.RaceID).subrace;
+                        $scope.selectedSubRace = 1;
                     }
                 }
             }

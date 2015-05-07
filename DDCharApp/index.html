@@ -156,16 +156,26 @@
                     and mountain dwarf wizards, for example, can be
                     unusual but memorable characters.
                 </p>
-                <div class="padding" ng-repeat="race in races">
-                    <button class="button button-block button-positive" ui-sref="generator.race.detail({selectedRaceID:race.id})">
-                        {{ race.name }}
-                    </button>
-                </div>
+                <div class="list">
 
+                    <label class="item item-input item-select">
+                        <div class="input-label">
+                            Race:
+                        </div>
+                        <select ng-model="$parent.selectedRace">
+                            <option ng-repeat="race in races" value="{{race.id}}">{{ race.name }}</option>
+                        </select>
+                    </label>
+
+                </div>                
 
             </ion-content>
             <div class="tabs tabs-icon-top">
                 <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.race.detail({selectedRaceID:selectedRace})">
+                    <i class="icon ion-arrow-right-c"></i>
+                    {{helper.getRace(selectedRace).name}} Details
+                </a>
             </div>
         </ion-view>
     </script>
@@ -261,15 +271,32 @@
                     kingdoms and call themselves shield dwarves and
                     gold dwarves, respectively.
                 </p>
-                <div class="padding" ng-repeat="subrace in subraces">
-                    <button class="button button-block button-positive" ui-sref="generator.race.subrace.detail({selectedSubRaceID:subrace.id})">
+                <div class="list">
+
+                    <label class="item item-input item-select">
+                        <div class="input-label">
+                            Subrace:
+                        </div>
+                        <select ng-model="$parent.selectedSubRace">
+                            <option ng-repeat="subrace in subraces" value="{{subrace.id}}">{{ subrace.name }}</option>
+                        </select>
+                    </label>
+
+                </div>
+
+                <!--<div class="padding" ng-repeat="subrace in subraces">
+                    <button class="button button-block button-positive" ui-sref="generator.race.subrace.detail({selectedSubRaceID:selectedSubRace})">
                         {{ subrace.name }}
                     </button>
-                </div>
+                </div>-->
             </ion-content>
             <div class="tabs tabs-icon-top">
                 <back-tab></back-tab>
                 <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.race.subrace.detail({selectedSubRaceID:selectedSubRace})">
+                    <i class="icon ion-arrow-right-c"></i>
+                    {{helper.getSubRace(TempCharacter.RaceID, selectedSubRace).name}} Details
+                </a>
             </div>
         </ion-view>
     </script>
