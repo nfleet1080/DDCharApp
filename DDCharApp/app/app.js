@@ -116,8 +116,10 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
             views: {
                 'generatorContent': {
                     templateUrl: "templates/class.html",
-                    controller: function ($scope, DataService) {
+                    controller: function ($scope, DataService, DetailService) {
                         $scope.classes = DataService.Classes();
+                        $scope.helper = DetailService;
+                        $scope.selectedClass = 1;
                     }
                 }
             }
@@ -144,16 +146,35 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                                     return DetailService.getArmor(option.id).name;
                                     break;
                                 case "Equipment":
-                                    var s = DetailService.getEquipmentType(option.id).name;
-                                    if (s == "Simple Melee Weapons") {
-                                        s = "any simple melee weapon";
-                                    } else if (s == "Simple Ranged Weapons") {
-                                        s = "any simple ranged weapon";
+                                    switch (option.id) {
+                                        case 5:
+                                            return "any simple melee weapon";
+                                            break;
+                                        case 6:
+                                            return "any simple ranged weapon";
+                                            break;
+                                        case 9:
+                                            return "any simple weapon";
+                                            break;
+                                        case 7:
+                                            return "any martial melee weapon";
+                                            break;
+                                        case 8:
+                                            return "any martial ranged weapon";
+                                            break;
+                                        case 10:
+                                            return "any martial weapon";
+                                            break;
+                                        default:
+                                            return DetailService.getEquipmentType(option.id).name;
                                     }
                                     return s;
                                     break;
                                 case "Pack":
                                     return DetailService.getPack(option.id).name;
+                                    break;
+                                case "Gear":
+                                    return DetailService.getGear(option.id).name;
                                     break;
                                 case "Category":
                                     return DetailService.getCategory(option.id).name;

@@ -284,11 +284,6 @@
 
                 </div>
 
-                <!--<div class="padding" ng-repeat="subrace in subraces">
-                    <button class="button button-block button-positive" ui-sref="generator.race.subrace.detail({selectedSubRaceID:selectedSubRace})">
-                        {{ subrace.name }}
-                    </button>
-                </div>-->
             </ion-content>
             <div class="tabs tabs-icon-top">
                 <back-tab></back-tab>
@@ -350,15 +345,27 @@
                     character can do particularly well, from using certain
                     weapons to telling a convincing lie.
                 </p>
-                <div class="padding" ng-repeat="class in classes">
-                    <button class="button button-block button-positive" ui-sref="generator.class.detail({selectedClassID:class.id})">
-                        {{ class.Name }}
-                    </button>
+                <div class="list">
+
+                    <label class="item item-input item-select">
+                        <div class="input-label">
+                            Class:
+                        </div>
+                        <select ng-model="$parent.selectedClass">
+                            <option ng-repeat="class in classes" value="{{class.id}}">{{ class.Name }}</option>
+                        </select>
+                    </label>
+
                 </div>
+
             </ion-content>
             <div class="tabs tabs-icon-top">
                 <back-tab></back-tab>
                 <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.class.detail({selectedClassID:selectedClass})">
+                    <i class="icon ion-arrow-right-c"></i>
+                    {{helper.getClass(selectedClass).Name}} Details
+                </a>
             </div>
         </ion-view>
     </script>
@@ -436,7 +443,12 @@
                     <div class="item item-text-wrap">
                         <ul style="padding-left:1em">
                             <li ng-repeat="item in chosenClass.StartingEquip" style="list-style-type:disc">
-                                <span ng-repeat="option in item">{{resolveOption(option)}}<span ng-show="option.AmmoID"> and {{resolveAmmo(option.AmmoID)}}</span><span ng-show="option.ifProficient"> (if proficient)</span><span ng-hide="$last"> or </span></span>
+                                <span ng-repeat="option in item">
+                                    <span ng-repeat="optionItem in option">
+                                        {{resolveOption(optionItem)}}<span ng-show="optionItem.ifProficient"> (if proficient)</span><span ng-show="option.length > 2">,</span> <span ng-hide="$last"><span ng-show="$index == option.length - 2">and</span></span>
+                                    </span>
+                                    <span ng-hide="$last" style="font-weight:bold"> or </span>
+                                </span>
                             </li>
                         </ul>
                     </div>
