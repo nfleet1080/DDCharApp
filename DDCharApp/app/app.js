@@ -37,6 +37,25 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
             abstract: true,
             templateUrl: "templates/generator.html",
         })
+        .state('generator.quick', {
+            url: "/quick",
+            parent: 'generator',
+            views: {
+                'generatorContent': {
+                    templateUrl: "templates/quickRaceClass.html",
+                    controller: function ($scope, DataService, DetailService) {
+                    	$scope.helper = DetailService;
+                    	
+                    	$scope.races = DataService.Races();
+                        $scope.selectedRace = 1;
+                        $scope.subraces = DetailService.getRace($scope.selectedRace).subrace;
+                        $scope.selectedSubRace = 1;
+                        $scope.classes = DataService.Classes();                        
+                        $scope.selectedClass = 1;
+                    }
+                }
+            }
+        })
         .state('generator.race', {
             url: "/race",
             parent: 'generator',
@@ -117,8 +136,9 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                 'generatorContent': {
                     templateUrl: "templates/class.html",
                     controller: function ($scope, DataService, DetailService) {
-                        $scope.classes = DataService.Classes();
-                        $scope.helper = DetailService;
+                    	$scope.helper = DetailService;
+                    	
+                    	$scope.classes = DataService.Classes();                        
                         $scope.selectedClass = 1;
                     }
                 }

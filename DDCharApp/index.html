@@ -140,6 +140,54 @@
         </ion-nav-bar>
         <ion-nav-view name="generatorContent"></ion-nav-view>
     </script>
+    
+    <script id="templates/quickRaceClass.html" type="text/ng-template">
+        <ion-view view-title="Pick a Race">
+            <ion-content class="padding has-footer">
+                <p>
+                    This version if the generator is a condensed version of the other generator by omitting informative detail pages.
+                </p>
+                <div class="list">
+
+                    <label class="item item-input item-select">
+                        <div class="input-label">
+                            Race:
+                        </div>
+                        <select ng-model="selectedRace">
+                            <option ng-repeat="race in races" value="{{race.id}}">{{ race.name }}</option>
+                        </select>
+                    </label>
+
+					<label class="item item-input item-select">
+                        <div class="input-label">
+                            Subrace:
+                        </div>
+                        <select ng-model="selectedSubRace">
+                            <option ng-repeat="subrace in subraces" value="{{subrace.id}}">{{ subrace.name }}</option>
+                        </select>
+                    </label>
+
+					<label class="item item-input item-select">
+                        <div class="input-label">
+                            Class:
+                        </div>
+                        <select ng-model="selectedClass">
+                            <option ng-repeat="class in classes" value="{{class.id}}">{{ class.Name }}</option>
+                        </select>
+                    </label>
+
+                </div>                
+
+            </ion-content>
+            <div class="tabs tabs-icon-top">
+                <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.quick.domain">
+                    <i class="icon ion-arrow-right-c"></i>
+                    Next
+                </a>
+            </div>
+        </ion-view>
+    </script>
 
     <script id="templates/race.html" type="text/ng-template">
         <ion-view view-title="Pick a Race">
@@ -398,6 +446,15 @@
                         1d{{chosenClass.HitDie}} (or {{(chosenClass.HitDie / 2) + 1}}) + your Constitution modifier per <span style="text-transform:lowercase">{{chosenClass.Name}}</span> level after 1st
                     </div>
                 </div>
+
+				<div class="list card">
+                    <div class="item item-divider">
+                        Saving Throw Proficiencies
+                    </div>
+                    <div class="item item-text-wrap" ng-repeat="ability in chosenClass.SavingThrowProficiencies">
+						<info-popup title="{{helper.getASI(ability).name}}" text="{{helper.getASI(ability).description}}"></info-popup> {{helper.getASI(ability).name}}
+                    </div>
+				</div>
 
                 <div class="list card">
                     <div class="item item-divider">
