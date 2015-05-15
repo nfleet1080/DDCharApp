@@ -3,6 +3,50 @@
 dndapp.factory('DetailService', function ($filter, DataService) {
     // quick way to return all details of a chosen race
     return {
+        roll: function (min, max, count) {
+            if (!count) {
+                count = 1;
+            } 
+            var r = [];
+            for (var i = 0; i < count; i++) {
+                r.push(Math.floor(Math.random() * (max - min + 1) + min));
+            }
+            return r;
+        },
+        getRacialStatBonuses: function (raceID, subRaceID) {
+            var Abilities = [];
+            for (var i = 0; i < DataService.AbilityScores().length; i++) {
+                // get default abilities
+                var currentAbility = DataService.AbilityScores()[i];
+                Abilities.push({"id":currentAbility.id, "name":currentAbility.name,"bonus":0});
+            }
+            // get the race bonuses
+            var race = this.getRace(raceID);
+            for (var r = 0; r < race.ASI.length; r++) {
+                var raceAbility = race.ASI[r];
+                for (var a = 0; a < Abilities.length; a++) {
+                    if (raceAbility.id == Abilities[a].id) {
+                        Abilities[a].bonus += raceAbility.bonus;
+                    }
+                }
+            }
+            // get the subrace bonuses
+            var subrace = this.getSubRace(raceID,subRaceID);
+            for (var r = 0; r < subrace.ASI.length; r++) {
+                var raceAbility = subrace.ASI[r];
+                for (var a = 0; a < Abilities.length; a++) {
+                    if (raceAbility.id == Abilities[a].id) {
+                        Abilities[a].bonus += raceAbility.bonus;
+                    }
+                }
+            }
+
+            return Abilities;
+        },
+        getStatBonus: function (abilityID, raceID, subRaceID) {
+            var Abilities = this.getRacialStatBonuses(raceID, subRaceID);
+            return ($filter('filter')(Abilities, { id: Number(abilityID) }, true))[0];
+        },
         getLanguage: function (languageID) {
             return ($filter('filter')(DataService.Languages(), { id: Number(languageID) }, true))[0];
         },
@@ -264,6 +308,20 @@ dndapp.factory('DataService', function () {
               ],
               'languages': [1, 9],
               'subrace': [
+                  {
+                      'id': 1,
+                      'name': 'None',
+                      'description': null,
+                      'ASI': [],
+                      'traits': []
+                  },
+                  {
+                      'id': 2,
+                      'name': 'Variant',
+                      'description': null,
+                      'ASI': [],
+                      'traits': []
+                  }
               ]
           }
             ];

@@ -13,12 +13,14 @@
         }
     </style>
 
-    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+    <link href="Content/css/font-awesome.min.css" rel="stylesheet" />
     <link href="lib/ionic.min.css" rel="stylesheet" />
     <link href="lib/ionicons.min.css" rel="stylesheet" />
     <!-- ionic/angularjs js -->
     <script src="lib/ionic.bundle.js"></script>
     <script src="lib/ngStorage.min.js"></script>
+
+    <!--<script src="scripts/ngDraggable.js"></script>-->
 
     <script src="app/app.js"></script>
     <script src="app/directives.js"></script>
@@ -62,7 +64,7 @@
                         </div>
                         <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
                         <a ng-click="resetTempChar()" ui-sref="generator.race" class="item item-icon-left" menu-close><i class="icon ion-person-add calm"></i>Character Generator</a>
-                        <a ng-click="resetTempChar()" ui-sref="generator.quick" class="item item-icon-left" menu-close><i class="icon ion-flash assertive"></i>Quick Generator</a>
+                        <a ng-click="resetTempChar()" ui-sref="generator.quickRaceClass" class="item item-icon-left" menu-close><i class="icon ion-flash assertive"></i>Quick Generator</a>
                         <a ui-sref="app.manual" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Blank Sheet</a>
                         <a class="item item-icon-left" menu-close><i class="icon ion-person-stalker dark"></i>Copy Character</a>
 
@@ -140,9 +142,9 @@
         </ion-nav-bar>
         <ion-nav-view name="generatorContent"></ion-nav-view>
     </script>
-    
+
     <script id="templates/quickRaceClass.html" type="text/ng-template">
-        <ion-view view-title="Pick a Race">
+        <ion-view view-title="Race & Class">
             <ion-content class="padding has-footer">
                 <p>
                     This version if the generator is a condensed version of the other generator by omitting informative detail pages.
@@ -153,37 +155,226 @@
                         <div class="input-label">
                             Race:
                         </div>
-                        <select ng-model="selectedRace">
-                            <option ng-repeat="race in races" value="{{race.id}}">{{ race.name }}</option>
+                        <select ng-model="$parent.selectedRace" ng-options="race.name for race in races" ng-change="update()">
+                            <!--<option ng-repeat="race in races" value="{{race.id}}">{{ race.name }}</option>-->
                         </select>
                     </label>
 
-					<label class="item item-input item-select">
+                    <label class="item item-input item-select">
                         <div class="input-label">
                             Subrace:
                         </div>
-                        <select ng-model="selectedSubRace">
-                            <option ng-repeat="subrace in subraces" value="{{subrace.id}}">{{ subrace.name }}</option>
+                        <select ng-model="$parent.selectedSubRace" ng-options="subrace.name for subrace in subraces">
+                            <!--<option ng-repeat="subrace in subraces" value="{{subrace.id}}">{{ subrace.name }}</option>-->
                         </select>
                     </label>
 
-					<label class="item item-input item-select">
+                    <label class="item item-input item-select">
                         <div class="input-label">
                             Class:
                         </div>
-                        <select ng-model="selectedClass">
-                            <option ng-repeat="class in classes" value="{{class.id}}">{{ class.Name }}</option>
+                        <select ng-model="$parent.selectedClass" ng-options="class.Name for class in classes">
+                            <!--<option ng-repeat="class in classes" value="{{class.id}}">{{ class.Name }}</option>-->
                         </select>
                     </label>
 
-                </div>                
+                </div>
 
             </ion-content>
             <div class="tabs tabs-icon-top">
                 <generator-cancel-tab></generator-cancel-tab>
-                <a class="tab-item" ui-sref="generator.quick.domain">
+                <a class="tab-item" ng-click="selectClass()">
                     <i class="icon ion-arrow-right-c"></i>
-                    Next
+                    Ability Scores
+                </a>
+            </div>
+        </ion-view>
+    </script>
+    <script id="templates/quickAbilityScores.html" type="text/ng-template">
+        <ion-view title="Ability Scores">
+            <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
+
+                <ion-tab title="4d6 Roll">
+                    <ion-view>
+                        <ion-content class="scroll-content ionic-scroll padding has-footer has-header has-tabs-top">
+                            <div class="row" style="padding-top:0"><div class="col" style="padding:0">Tap the spinning die to reroll. Drag to reorder.</div></div>
+                            <div class="row" style="padding:0">
+                                <div class="col">
+                                    <button class="button icon button-clear button-assertive" ng-click="roll()">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-square fa-stack-2x fa-spin"></i>
+                                            <i class="fa fa-stack-1x fa-inverse fa-spin">6</i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="col col-75">
+                                    <p><strong>{{helper.getClass(TempCharacter.ClassID).Name}} suggestion: </strong><info-popup title="{{helper.getClass(TempCharacter.ClassID).Name}}" text="{{helper.getClass(TempCharacter.ClassID).AbilitySuggestion}}"></info-popup><br />Racial Bonuses in parenthesis.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="padding:0">
+                                <div class="col">
+                                    <ion-list>
+                                        <ion-item ng-repeat="score in rollResults track by $index" style="padding:6px;border:none;height:54px">
+                                            <span class="fa-stack fa-lg">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-stack-1x fa-inverse">{{score}}</i>
+                                            </span>
+                                        </ion-item>
+                                    </ion-list>
+                                </div>
+                                <div class="col col-75">
+                                    <ion-list show-delete="false"
+                                              show-reorder="true"
+                                              can-swipe="false">
+                                        <ion-item ng-repeat="item in abilities">
+                                            <span style="margin-left:50px">{{item.name.substring(0,3)}}<span ng-show="item.bonus"> (+{{item.bonus}})</span></span>
+
+                                            <ion-reorder-button class="ion-arrow-swap fa-rotate-90"
+                                                                on-reorder="moveItem(item, $fromIndex, $toIndex)">
+                                            </ion-reorder-button>
+
+                                        </ion-item>
+                                    </ion-list>
+                                </div>
+                            </div>
+                        </ion-content>
+                    </ion-view>
+                </ion-tab>
+
+                <ion-tab title="Quick">
+                    <ion-view>
+                        <ion-content class="scroll-content ionic-scroll padding has-footer has-header has-tabs-top">
+
+                            <p>
+                                If you want to save time or don’t like the idea of randomly determining ability scores, you can use the following scores.<br />
+                                <strong>{{helper.getClass(TempCharacter.ClassID).Name}} suggestion: </strong><info-popup title="{{helper.getClass(TempCharacter.ClassID).Name}}" text="{{helper.getClass(TempCharacter.ClassID).AbilitySuggestion}}"></info-popup>
+                            </p>
+
+
+
+                            <div class="row" style="padding:0">
+                                <div class="col">
+                                    <ion-list>
+                                        <ion-item ng-repeat="score in staticScores track by $index" style="padding:6px;border:none;height:54px">
+                                            <span class="fa-stack fa-lg">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-stack-1x fa-inverse">{{score}}</i>
+                                            </span>
+                                        </ion-item>
+                                    </ion-list>
+                                </div>
+                                <div class="col col-75">
+                                    <ion-list show-delete="false"
+                                              show-reorder="true"
+                                              can-swipe="false">
+                                        <ion-item ng-repeat="item in abilities">
+                                            <span style="margin-left:50px">{{item.name.substring(0,3)}}<span ng-show="item.bonus"> (+{{item.bonus}})</span></span>
+
+                                            <ion-reorder-button class="ion-arrow-swap fa-rotate-90"
+                                                                on-reorder="moveItem(item, $fromIndex, $toIndex)">
+                                            </ion-reorder-button>
+
+                                        </ion-item>
+                                    </ion-list>
+                                </div>
+                            </div>
+                        </ion-content>
+                    </ion-view>
+                </ion-tab>
+
+                <ion-tab title="Variant">
+                    <ion-view>
+                        <ion-content class="scroll-content ionic-scroll padding has-footer has-header has-tabs-top">
+                            <p><strong>{{helper.getClass(TempCharacter.ClassID).Name}} suggestion: </strong><info-popup title="{{helper.getClass(TempCharacter.ClassID).Name}}" text="{{helper.getClass(TempCharacter.ClassID).AbilitySuggestion}}"></info-popup></p>
+                            <h3 style="margin-top:0"><span ng-class="{'balanced':calculatePoints()>0,'assertive':calculatePoints()==0}">{{calculatePoints()}}</span> <small>available point<span ng-hide="calculatePoints() == 1">s</span></small></h3> 
+
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Str<span ng-show="getStatBonus(1)"> (+{{getStatBonus(1)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.str = pointBuy.str + 1;$apply;" ng-disabled="pointBuy.str == 15 || notEnoughPoints('str')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.str}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.str = pointBuy.str - 1;$apply;" ng-disabled="pointBuy.str == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Dex<span ng-show="getStatBonus(2)"> (+{{getStatBonus(2)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.dex = pointBuy.dex + 1;$apply;" ng-disabled="pointBuy.dex == 15 || notEnoughPoints('dex')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.dex}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.dex = pointBuy.dex - 1;$apply;" ng-disabled="pointBuy.dex == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Con<span ng-show="getStatBonus(3)"> (+{{getStatBonus(3)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.con = pointBuy.con + 1;$apply;" ng-disabled="pointBuy.con == 15 || notEnoughPoints('con')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.con}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.con = pointBuy.con - 1;$apply;" ng-disabled="pointBuy.con == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Int<span ng-show="getStatBonus(4)"> (+{{getStatBonus(4)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.int = pointBuy.int + 1;$apply;" ng-disabled="pointBuy.int == 15 || notEnoughPoints('int')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.int}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.int = pointBuy.int - 1;$apply;" ng-disabled="pointBuy.int == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Wis<span ng-show="getStatBonus(5)"> (+{{getStatBonus(5)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.wis = pointBuy.wis + 1;$apply;" ng-disabled="pointBuy.wis == 15 || notEnoughPoints('wis')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.wis}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.wis = pointBuy.wis - 1;$apply;" ng-disabled="pointBuy.wis == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-center" style="font-weight:bold">Chr<span ng-show="getStatBonus(6)"> (+{{getStatBonus(6)}})</span></div>
+                                <div class="col col-75">
+                                    <div class="button-bar">
+                                        <button class="button button-positive" ng-click="pointBuy.chr = pointBuy.chr + 1;$apply;" ng-disabled="pointBuy.chr == 15 || notEnoughPoints('chr')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.chr}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.chr = pointBuy.chr - 1;$apply;" ng-disabled="pointBuy.chr == 8"><i class="icon ion-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ion-content>
+                    </ion-view>
+                </ion-tab>
+
+                <ion-tab title="Manual">
+                    <ion-view>
+                        <ion-content class="scroll-content ionic-scroll padding has-footer has-header has-tabs-top">
+                            test...
+                        </ion-content>
+                    </ion-view>
+                </ion-tab>
+
+            </ion-tabs>
+
+
+            <div class="tabs tabs-icon-top">
+                <a class="tab-item" ui-sref="generator.quickRaceClass">
+                    <i class="icon ion-arrow-left-c"></i> Back
+                </a>
+
+                <generator-cancel-tab></generator-cancel-tab>
+                <a class="tab-item" ui-sref="generator.quick.AbilityScores">
+                    <i class="icon ion-arrow-right-c"></i>
+                    Ability Scores
                 </a>
             </div>
         </ion-view>
@@ -215,7 +406,7 @@
                         </select>
                     </label>
 
-                </div>                
+                </div>
 
             </ion-content>
             <div class="tabs tabs-icon-top">
@@ -447,14 +638,14 @@
                     </div>
                 </div>
 
-				<div class="list card">
+                <div class="list card">
                     <div class="item item-divider">
                         Saving Throw Proficiencies
                     </div>
                     <div class="item item-text-wrap" ng-repeat="ability in chosenClass.SavingThrowProficiencies">
-						<info-popup title="{{helper.getASI(ability).name}}" text="{{helper.getASI(ability).description}}"></info-popup> {{helper.getASI(ability).name}}
+                        <info-popup title="{{helper.getASI(ability).name}}" text="{{helper.getASI(ability).description}}"></info-popup> {{helper.getASI(ability).name}}
                     </div>
-				</div>
+                </div>
 
                 <div class="list card">
                     <div class="item item-divider">
@@ -484,18 +675,18 @@
                         <span ng-repeat="tool in chosenClass.Tools">{{helper.getTool(tool).name}}<span ng-hide="$last">, </span></span>
                         <span ng-hide="chosenClass.Tools.length > 0">None</span>
                     </div>
-                    </div>
+                </div>
 
                 <p>Upon character creation you will be able to select either equipment based off both your class and background <strong style="text-transform:uppercase;text-decoration:underline">or</strong> a number of gold pieces based on your class to spend on items.</p>
                 <div class="list card">
                     <div class="item item-divider">
-                       {{chosenClass.Name}} Starting Wealth
+                        {{chosenClass.Name}} Starting Wealth
                     </div>
                     <div class="item item-text-wrap">
                         {{chosenClass.StartingWealth.DieCount}}d{{chosenClass.StartingWealth.Die}} x {{chosenClass.StartingWealth.Multiplier}} gp
                     </div>
                     <div class="item item-divider">
-                       {{chosenClass.Name}} Starting Equipment
+                        {{chosenClass.Name}} Starting Equipment
                     </div>
                     <div class="item item-text-wrap">
                         <ul style="padding-left:1em">
