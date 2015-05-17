@@ -126,6 +126,7 @@
     <Content Include="fonts\ionicons.ttf" />
     <Content Include="fonts\ionicons.woff" />
     <Content Include="images\cleric.svg" />
+    <Content Include="images\d6.svg" />
     <Content Include="images\fighter.svg" />
     <Content Include="images\rogue.svg" />
     <Content Include="images\wizard.svg" />

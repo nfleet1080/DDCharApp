@@ -84,7 +84,7 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
             views: {
                 'generatorContent': {
                     templateUrl: "templates/quickAbilityScores.html",
-                    controller: function ($scope, $rootScope, DataService, DetailService, $ionicHistory,$filter) {
+                    controller: function ($scope, $rootScope, DataService, DetailService, $ionicHistory,$filter,$ionicTabsDelegate) {
                         
                         $scope.roll = function () {
                             // clear the existing roll results
@@ -139,8 +139,18 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                             "con": 8,
                             "int": 8,
                             "wis": 8,
-                            "chr": 8,
+                            "cha": 8,
                         }
+
+                        $scope.manual = {
+                            "str": null,
+                            "dex": null,
+                            "con": null,
+                            "int": null,
+                            "wis": null,
+                            "cha": null,
+                        }
+
                         var pointCostValues = [
                                 { "point": 8, "cost": 0 },
                                 { "point": 9, "cost": 1 },
@@ -162,7 +172,7 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                             runningTotal -= pointCost($scope.pointBuy.con);
                             runningTotal -= pointCost($scope.pointBuy.int);
                             runningTotal -= pointCost($scope.pointBuy.wis);
-                            runningTotal -= pointCost($scope.pointBuy.chr);
+                            runningTotal -= pointCost($scope.pointBuy.cha);
                             return runningTotal;
                         }
 
@@ -198,6 +208,11 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                             $scope.abilities.splice(toIndex, 0, item);
                         };
 
+                        $scope.pickScores = function () {
+                            console.info("tab index:" + $ionicTabsDelegate.selectedIndex());
+                        };
+
+                        // trigger this event from the previous view's next button to get the new racial bonuses
                         $rootScope.$on('raceChanged', function () {
                             $scope.abilities = $scope.getAbilities();
                         });

@@ -29,6 +29,13 @@
     <!-- your project references -->
     <link href="css/index.css" rel="stylesheet" />
 
+
+    <style>
+        .fa-spin {
+            -webkit-animation: fa-spin 3s infinite linear;
+            animation: fa-spin 3s infinite linear
+        }
+    </style>
 </head>
 <body ng-controller="MainCtrl">
     <script src="cordova.js"></script>
@@ -201,10 +208,11 @@
                             <div class="row" style="padding:0">
                                 <div class="col">
                                     <button class="button icon button-clear button-assertive" ng-click="roll()">
-                                        <span class="fa-stack fa-lg">
+                                        <img src="images/d6.svg" class="fa-spin" style="height:42px"/>
+                                        <!--<span class="fa-stack fa-lg">
                                             <i class="fa fa-square fa-stack-2x fa-spin"></i>
                                             <i class="fa fa-stack-1x fa-inverse fa-spin">6</i>
-                                        </span>
+                                        </span>-->
                                     </button>
                                 </div>
                                 <div class="col col-75">
@@ -341,12 +349,12 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col col-center" style="font-weight:bold">Chr<span ng-show="getStatBonus(6)"> (+{{getStatBonus(6)}})</span></div>
+                                <div class="col col-center" style="font-weight:bold">Cha<span ng-show="getStatBonus(6)"> (+{{getStatBonus(6)}})</span></div>
                                 <div class="col col-75">
                                     <div class="button-bar">
-                                        <button class="button button-positive" ng-click="pointBuy.chr = pointBuy.chr + 1;$apply;" ng-disabled="pointBuy.chr == 15 || notEnoughPoints('chr')"><i class="icon ion-plus"></i></button>
-                                        <button class="button button-clear button-dark">{{pointBuy.chr}}</button>
-                                        <button class="button button-dark" ng-click="pointBuy.chr = pointBuy.chr - 1;$apply;" ng-disabled="pointBuy.chr == 8"><i class="icon ion-minus"></i></button>
+                                        <button class="button button-positive" ng-click="pointBuy.cha = pointBuy.cha + 1;$apply;" ng-disabled="pointBuy.cha == 15 || notEnoughPoints('cha')"><i class="icon ion-plus"></i></button>
+                                        <button class="button button-clear button-dark">{{pointBuy.cha}}</button>
+                                        <button class="button button-dark" ng-click="pointBuy.cha = pointBuy.cha - 1;$apply;" ng-disabled="pointBuy.cha == 8"><i class="icon ion-minus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -358,7 +366,32 @@
                 <ion-tab title="Manual">
                     <ion-view>
                         <ion-content class="scroll-content ionic-scroll padding has-footer has-header has-tabs-top">
-                            test...
+                            <div class="list list-inset">
+                                <label class="item item-input">
+                                    <span class="input-label">Strength<span ng-show="getStatBonus(1)"> (+{{getStatBonus(1)}})</span>:</span>
+                                    <input type="text" ng-model="manual.str" placeholder="8">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label">Dexterity<span ng-show="getStatBonus(2)"> (+{{getStatBonus(2)}})</span>:</span>
+                                    <input type="text" ng-model="manual.dex" placeholder="8">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label">Constitution<span ng-show="getStatBonus(3)"> (+{{getStatBonus(3)}})</span>:</span>
+                                    <input type="text" ng-model="manual.con" placeholder="8">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label">Intelligence<span ng-show="getStatBonus(4)"> (+{{getStatBonus(4)}})</span>:</span>
+                                    <input type="text" ng-model="manual.int" placeholder="8">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label">Wisdom<span ng-show="getStatBonus(5)"> (+{{getStatBonus(5)}})</span>:</span>
+                                    <input type="text" ng-model="manual.wis" placeholder="8">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label">Charisma<span ng-show="getStatBonus(6)"> (+{{getStatBonus(6)}})</span>:</span>
+                                    <input type="text" ng-model="manual.cha" placeholder="8">
+                                </label>
+                            </div>
                         </ion-content>
                     </ion-view>
                 </ion-tab>
@@ -372,9 +405,9 @@
                 </a>
 
                 <generator-cancel-tab></generator-cancel-tab>
-                <a class="tab-item" ui-sref="generator.quick.AbilityScores">
+                <a class="tab-item" ng-click="pickScores()">
                     <i class="icon ion-arrow-right-c"></i>
-                    Ability Scores
+                    Next
                 </a>
             </div>
         </ion-view>
