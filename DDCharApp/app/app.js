@@ -209,7 +209,45 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                         };
 
                         $scope.pickScores = function () {
-                            console.info("tab index:" + $ionicTabsDelegate.selectedIndex());
+                            var abilityScore = [];
+                            switch ($ionicTabsDelegate.selectedIndex()) {
+                                case 0:
+                                    // 4d6 roll
+                                    for (var i = 0; i < $scope.abilities.length; i++) {
+                                        var tmpObject = {};
+                                        tmpObject[$scope.abilities[i].id] = $scope.rollResults[i];
+                                        abilityScore.push(tmpObject);
+                                    }
+                                    break;
+                                case 1:
+                                    // quick
+                                    for (var i = 0; i < $scope.abilities.length; i++) {
+                                        var tmpObject = {};
+                                        tmpObject[$scope.abilities[i].id] = $scope.staticScores[i];
+                                        abilityScore.push(tmpObject);
+                                    }
+                                    break;
+                                case 2:
+                                    // variant
+                                    abilityScore.push({ 1: $scope.pointBuy.str });
+                                    abilityScore.push({ 2: $scope.pointBuy.dex });
+                                    abilityScore.push({ 3: $scope.pointBuy.con });
+                                    abilityScore.push({ 4: $scope.pointBuy.int });
+                                    abilityScore.push({ 5: $scope.pointBuy.wis });
+                                    abilityScore.push({ 6: $scope.pointBuy.cha });
+                                    break;
+                                case 3:
+                                    // manual
+                                    abilityScore.push({ 1: $scope.manual.str });
+                                    abilityScore.push({ 2: $scope.manual.dex });
+                                    abilityScore.push({ 3: $scope.manual.con });
+                                    abilityScore.push({ 4: $scope.manual.int });
+                                    abilityScore.push({ 5: $scope.manual.wis });
+                                    abilityScore.push({ 6: $scope.manual.cha });
+                                    break;
+                            }
+                            console.info(abilityScore);
+                            $rootScope.TempCharacter.abilityScore = abilityScore;
                         };
 
                         // trigger this event from the previous view's next button to get the new racial bonuses
