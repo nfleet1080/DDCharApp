@@ -6,7 +6,7 @@ dndapp.factory('DetailService', function ($filter, DataService) {
         roll: function (min, max, count) {
             if (!count) {
                 count = 1;
-            } 
+            }
             var r = [];
             for (var i = 0; i < count; i++) {
                 r.push(Math.floor(Math.random() * (max - min + 1) + min));
@@ -18,7 +18,7 @@ dndapp.factory('DetailService', function ($filter, DataService) {
             for (var i = 0; i < DataService.AbilityScores().length; i++) {
                 // get default abilities
                 var currentAbility = DataService.AbilityScores()[i];
-                Abilities.push({"id":currentAbility.id, "name":currentAbility.name,"bonus":0});
+                Abilities.push({ "id": currentAbility.id, "name": currentAbility.name, "bonus": 0 });
             }
             // get the race bonuses
             var race = this.getRace(raceID);
@@ -31,7 +31,7 @@ dndapp.factory('DetailService', function ($filter, DataService) {
                 }
             }
             // get the subrace bonuses
-            var subrace = this.getSubRace(raceID,subRaceID);
+            var subrace = this.getSubRace(raceID, subRaceID);
             for (var r = 0; r < subrace.ASI.length; r++) {
                 var raceAbility = subrace.ASI[r];
                 for (var a = 0; a < Abilities.length; a++) {
@@ -83,7 +83,7 @@ dndapp.factory('DetailService', function ($filter, DataService) {
         },
         getPack: function (packID) {
             return ($filter('filter')(DataService.EquipmentPacks(), { id: Number(packID) }, true))[0];
-    },
+        },
         getCategory: function (categoryID) {
             return ($filter('filter')(DataService.ItemCategory(), { id: Number(categoryID) }, true))[0];
         },
@@ -115,7 +115,26 @@ dndapp.factory('DetailService', function ($filter, DataService) {
                 return (gp > 0 ? $filter('number')(gp) + " gp " : "") + (sp > 0 ? $filter('number')(sp) + " sp " : "") + (cp > 0 ? $filter('number')(cp) + " cp " : "").trim();
             }
         },
+        convertHeight: function (inches) {
+            var feet = Math.floor(inches / 12);
+            inches %= 12;
+            return feet + "'" + inches + '"';
+        },
+        generateName: function (raceID, sex) {
+            var nameData = this.getRace(raceID).names;
+            var firstName, lastName = nameData.last[this.roll(1, nameData.last.length, 1) - 1];
 
+            switch (sex) {
+                case 'Male':
+                    firstName = nameData.male[this.roll(1, nameData.male.length, 1) - 1];
+                    break;
+                case 'Female':
+                    firstName = nameData.female[this.roll(1, nameData.female.length, 1) - 1];
+                    break;
+            }
+
+            return firstName + ' ' + lastName;
+        },
     }
 });
 dndapp.factory('DataService', function () {
@@ -145,6 +164,11 @@ dndapp.factory('DataService', function () {
               'ageDesc': "Dwarves mature at the same rate as humans, but they’re considered young until they reach the age of 50. On average, they live about 350 years.",
               'alignment': 'Lawful Good',
               'size': 'Medium',
+              'names': {
+                  'male': ['Adrik', 'Alberich', 'Baern', 'Barendd', 'Brottor', 'Bruenor', 'Dain', 'Darrak', 'Delg', 'Eberk', 'Einkil', 'Fargrim', 'Flint', 'Gardain', 'Harbek', 'Kildrak', 'Morgran', 'Orsik', 'Oskar', 'Rangrim', 'Rurik', 'Taklinn', 'Thoradin', 'Thorin', 'Tordek', 'Traubon', 'Travok', 'Ulfgar', 'Veit', 'Vondal'],
+                  'female': ['Amber', 'Artin', 'Audhild', 'Bardryn', 'Dagnal', 'Diesa', 'Eldeth', 'Falkrunn', 'Finellen', 'Gunnloda', 'Gurdis', 'Helja', 'Hlin', 'Kathra', 'Kristryd', 'Ilde', 'Liftrasa', 'Mardred', 'Riswynn', 'Sannl', 'Torbera', 'Torgga', 'Vistra'],
+                  'last': ['Balderk', 'Battlehammer', 'Brawnanvil', 'Dankil', 'Fireforge', 'Frostbeard', 'Gorunn', 'Holderhek', 'Ironfist', 'Loderr', 'Lutgehr', 'Rumnaheim', 'Strakeln', 'Torunn', 'Ungart']
+              },
               'speed': 25,
               'traits': [
                 { 'name': 'Darkvision', 'description': 'Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.' },
@@ -165,7 +189,11 @@ dndapp.factory('DataService', function () {
                               'name': 'Dwarven Toughness',
                               'description': 'Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.'
                           }
-                      ]
+                      ],
+                      'baseHeight': 44, //inches
+                      'heightModifier': { 'qty': 2, 'die': 4 },
+                      'baseWeight': 115, //lbs
+                      'weightModifier': { 'qty': 2, 'die': 6 },
                   },
                   {
                       'id': 2,
@@ -177,7 +205,11 @@ dndapp.factory('DataService', function () {
                               'name': 'Dwarven Armor Training',
                               'description': 'You have proficiency with light and medium armor.'
                           }
-                      ]
+                      ],
+                      'baseHeight': 48, //inches
+                      'heightModifier': { 'qty': 2, 'die': 4 },
+                      'baseWeight': 130, //lbs
+                      'weightModifier': { 'qty': 2, 'die': 6 },
                   }
               ]
           },
@@ -191,6 +223,11 @@ dndapp.factory('DataService', function () {
               'ageDesc': "An elf typically claims adulthood and an adult name around the age of 100 and can live to be 750 years old.",
               'alignment': 'Chaotic Good',
               'size': 'Medium',
+              'names': {
+                  'male': ['Adran', 'Aelar', 'Aramil', 'Arannis', 'Aust', 'Beiro', 'Berrian', 'Carric', 'Enialis', 'Erdan', 'Erevan', 'Galinndan', 'Hadarai', 'Heian', 'Himo', 'Immeral', 'Ivellios', 'Laucian', 'Mindartis', 'Paelias', 'Peren', 'Quarion', 'Riardon', 'Rolen', 'Soveliss', 'Thamior', 'Tharivol', 'Theren', 'Varis'],
+                  'female': ['Adrie', 'Althaea', 'Anastrianna', 'Andraste', 'Antinua', 'Bethrynna', 'Birel', 'Caelynn', 'Drusilia', 'Enna', 'Felosial', 'Ielenia', 'Jelenneth', 'Keyleth', 'Leshanna', 'Lia', 'Meriele', 'Mialee', 'Naivara', 'Quelenna', 'Quillathe', 'Sariel', 'Shanairra', 'Shava', 'Silaqui', 'Theirastra', 'Thia', 'Vadania', 'Valanthe', 'Xanaphia'],
+                  'last': ['Amakiir (Gemflower)', 'Amastacia (Starflower)', 'Galanodel (Moonwhisper)', 'Holimion (Diamonddew)', 'Ilphelkiir (Gemblossom)', 'Liadon (Silverfrond)', 'Meliamne (Oakenheel)', 'Naïlo (Nightbreeze)', 'Siannodel (Moonbrook)', 'Xiloscient (Goldpetal)']
+              },
               'speed': 30,
               'traits': [
                 { 'name': 'Darkvision', 'description': 'Accustomed to twilit forests and the night sky, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.' },
@@ -218,7 +255,11 @@ dndapp.factory('DataService', function () {
                                                 'name': 'Extra Language',
                                                 'description': 'You can speak, read, and write one extra language of your choice.'
                                             }
-                      ]
+                      ],
+                      'baseHeight': 54, //inches
+                      'heightModifier': { 'qty': 2, 'die': 10 },
+                      'baseWeight': 90, //lbs
+                      'weightModifier': { 'qty': 1, 'die': 4 },
                   },
                   {
                       'id': 2,
@@ -238,7 +279,11 @@ dndapp.factory('DataService', function () {
                                'name': 'Mask of the Wild',
                                'description': 'You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena.'
                            }
-                      ]
+                      ],
+                      'baseHeight': 54, //inches
+                      'heightModifier': { 'qty': 2, 'die': 10 },
+                      'baseWeight': 100, //lbs
+                      'weightModifier': { 'qty': 1, 'die': 4 },
                   }
               ]
           },
@@ -252,6 +297,11 @@ dndapp.factory('DataService', function () {
               'ageDesc': "A halfling reaches adulthood at the age of 20 and generally lives into the middle of his or her second century.",
               'alignment': 'Lawful Good',
               'size': 'Small',
+              'names': {
+                  'male': ['Alton', 'Ander', 'Cade', 'Corrin', 'Eldon', 'Errich', 'Finnan', 'Garret', 'Lindal', 'Lyle', 'Merric', 'Milo', 'Osborn', 'Perrin', 'Reed', 'Roscoe', 'Wellby'],
+                  'female': ['Andry', 'Bree', 'Callie', 'Cora', 'Euphemia', 'Jillian', 'Kithri', 'Lavinia', 'Lidda', 'Merla', 'Nedda', 'Paela', 'Portia', 'Seraphina', 'Shaena', 'Trym', 'Vani', 'Verna'],
+                  'last': ['Brushgather', 'Goodbarrel', 'Greenbottle', 'High-hill', 'Hilltopple', 'Leagallow', 'Tealeaf', 'Thorngage', 'Tosscobble', 'Underbough']
+              },
               'speed': 25,
               'traits': [
                 { 'name': 'Lucky', 'description': 'When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.' },
@@ -270,7 +320,11 @@ dndapp.factory('DataService', function () {
                               'name': 'Naturally Stealthy',
                               'description': 'You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you.'
                           }
-                      ]
+                      ],
+                      'baseHeight': 31, //inches
+                      'heightModifier': { 'qty': 2, 'die': 4 },
+                      'baseWeight': 35, //lbs
+                      'weightModifier': { 'qty': 1, 'die': 1 },
                   },
                   {
                       'id': 2,
@@ -282,7 +336,11 @@ dndapp.factory('DataService', function () {
                               'name': 'Stout Resilience',
                               'description': 'You have advantage on saving throws against poison, and you have resistance against poison damage.'
                           }
-                      ]
+                      ],
+                      'baseHeight': 31, //inches
+                      'heightModifier': { 'qty': 2, 'die': 4 },
+                      'baseWeight': 35, //lbs
+                      'weightModifier': { 'qty': 1, 'die': 1 },
                   }
               ]
           },
@@ -303,6 +361,11 @@ dndapp.factory('DataService', function () {
               'ageDesc': "Humans reach adulthood in their late teens and live less than a century.",
               'alignment': '',
               'size': 'Medium',
+              'names': {
+                  'male': ['Darvin', 'Dorn', 'Evendur', 'Gorstag', 'Grim', 'Helm', 'Malark', 'Morn', 'Randal', 'Stedd', 'Bor', 'Fodel', 'Glar', 'Grigor', 'Igan', 'Ivor', 'Kosef', 'Mival', 'Orel', 'Pavel', 'Sergor', 'Ander', 'Blath', 'Bran', 'Frath', 'Geth', 'Lander', 'Luth', 'Malcer', 'Stor', 'Taman', 'Urth'],
+                  'female': ['Alethra', 'Kara', 'Katernin', 'Mara', 'Natali', 'Olma', 'Tana', 'Zora', 'Amafrey', 'Betha', 'Cefrey', 'Kethra', 'Mara', 'Olga', 'Silifrey', 'Westra', 'Arizima', 'Chathi', 'Nephis', 'Nulara', 'Murithi', 'Sefris', 'Thola', 'Umara', 'Zolis'],
+                  'last': ['Amblecrown', 'Buckman', 'Dundragon', 'Evenwood', 'Greycastle', 'Tallstag', 'Bersk', 'Chernin', 'Dotsk', 'Kulenov', 'Marsk', 'Nemetsk', 'Shemov', 'Starag', 'Brightwood', 'Helder', 'Hornraven', 'Lackman', 'Stormwind', 'Windrivver']
+              },
               'speed': 30,
               'traits': [
               ],
@@ -313,14 +376,22 @@ dndapp.factory('DataService', function () {
                       'name': 'None',
                       'description': null,
                       'ASI': [],
-                      'traits': []
+                      'traits': [],
+                      'baseHeight': 56, //inches
+                      'heightModifier': { 'qty': 2, 'die': 10 },
+                      'baseWeight': 110, //lbs
+                      'weightModifier': { 'qty': 2, 'die': 4 },
                   },
                   {
                       'id': 2,
                       'name': 'Variant',
                       'description': null,
                       'ASI': [],
-                      'traits': []
+                      'traits': [],
+                      'baseHeight': 56, //inches
+                      'heightModifier': { 'qty': 2, 'die': 10 },
+                      'baseWeight': 110, //lbs
+                      'weightModifier': { 'qty': 2, 'die': 4 },
                   }
               ]
           }
@@ -334,6 +405,64 @@ dndapp.factory('DataService', function () {
                 { "id": 4, "name": "Intelligence", "description": "Intelligence measures mental acuity, accuracy of recall, and the ability to reason." },
                 { "id": 5, "name": "Wisdom", "description": "Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition." },
                 { "id": 6, "name": "Charisma", "description": "Charisma measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality." }
+            ];
+        },
+        Alignment: function () {
+            return [
+                {
+                    "id": 1,
+                    "name": "Lawful good",
+                    "short": "LG",
+                    "description":"Lawful good (LG) creatures can be counted on to do the right thing as expected by society. Gold dragons, paladins, and most dwarves are lawful good."
+                },
+                {
+                    "id": 2,
+                    "name": "Neutral good",
+                    "short": "NG",
+                    "description": "Neutral good (NG) folk do the best they can to help others according to their needs. Many celestials, some cloud giants, and most gnomes are neutral good."
+                },
+                {
+                    "id": 3,
+                    "name": "Chaotic good",
+                    "short": "CG",
+                    "description": "Chaotic good (CG) creatures act as their conscience directs, with little regard for what others expect. Copper dragons, many elves, and unicorns are chaotic good."
+                },
+                {
+                    "id": 4,
+                    "name": "Lawful neutral",
+                    "short": "LN",
+                    "description": "Lawful neutral (LN) individuals act in accordance with law, tradition, or personal codes. Many monks and some wizards are lawful neutral."
+                },
+                {
+                    "id": 5,
+                    "name": "Neutral",
+                    "short": "N",
+                    "description": "Neutral (N) is the alignment of those who prefer to steer clear of moral questions and don’t take sides, doing what seems best at the time. Lizardfolk, most druids, and many humans are neutral."
+                },
+                {
+                    "id": 6,
+                    "name": "Chaotic neutral",
+                    "short": "CN",
+                    "description": "Chaotic neutral (CN) creatures follow their whims, holding their personal freedom above all else. Many barbarians and rogues, and some bards, are chaotic neutral."
+                },
+                {
+                    "id": 7,
+                    "name": "Lawful evil",
+                    "short": "LE",
+                    "description": "Lawful evil (LE) creatures methodically take what they want, within the limits of a code of tradition, loyalty, or order. Devils, blue dragons, and hobgoblins are lawful evil."
+                },
+                {
+                    "id": 8,
+                    "name": "Neutral evil",
+                    "short": "NE",
+                    "description": "Neutral evil (NE) is the alignment of those who do whatever they can get away with, without compassion or qualms. Many drow, some cloud giants, and yugoloths are neutral evil."
+                },
+                {
+                    "id": 9,
+                    "name": "Chaotic evil",
+                    "short": "CE",
+                    "description": "Chaotic evil (CE) creatures act with arbitrary violence, spurred by their greed, hatred, or bloodlust. Demons, red dragons, and orcs are chaotic evil."
+                },
             ];
         },
         Skills: function () {
@@ -373,14 +502,14 @@ dndapp.factory('DataService', function () {
      "Tools": [],
      "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [
-         [[{ "Type": "Weapon", "id": 7, "ifProficient": false, "qty":1 }], [{ "Type": "Weapon", "id": 32, "ifProficient": true, "qty":1 }]],
-         [[{ "Type": "Armor", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty":1 }], [{ "Type": "Armor", "id": 5, "ifProficient": true, "qty":1 }]],
-         [[{ "Type": "Weapon", "id": 12, "ifProficient": false, "qty":1 }, { "Type": "Gear", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Equipment", "id": 5, "ifProficient": false, "qty":1 }], [{ "Type": "Equipment", "id": 6, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Pack", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Pack", "id": 5, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Armor", "id": 13, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Category", "id": 4, "ifProficient": false, "qty":1 }]],
+         [[{ "Type": "Weapon", "id": 7, "ifProficient": false, "qty": 1 }], [{ "Type": "Weapon", "id": 32, "ifProficient": true, "qty": 1 }]],
+         [[{ "Type": "Armor", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 5, "ifProficient": true, "qty": 1 }]],
+         [[{ "Type": "Weapon", "id": 12, "ifProficient": false, "qty": 1 }, { "Type": "Gear", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Equipment", "id": 5, "ifProficient": false, "qty": 1 }], [{ "Type": "Equipment", "id": 6, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Pack", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Pack", "id": 5, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Armor", "id": 13, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Category", "id": 4, "ifProficient": false, "qty": 1 }]],
      ],
-     "Skills": {"HowMany":2,"Choices":[6,11,12,18,9]},
+     "Skills": { "HowMany": 2, "Choices": [6, 11, 12, 18, 9] },
      "Icon": "images/cleric.svg",
      "AbilitySuggestion": "First, Wisdom should be your highest ability score, followed by Strength or Constitution.",
      "BackgroundSuggestion": "Choose the acolyte background.",
@@ -400,12 +529,12 @@ dndapp.factory('DataService', function () {
      "Tools": [],
      "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [
-         [[{ "Type": "Armor", "id": 10, "ifProficient": false, "qty":1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty":1 }, { "Type": "Weapon", "id": 37, "ifProficient": false, "qty":1 }, { "Type": "Gear", "id": 4, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Equipment", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty":1 }], [{ "Type": "Armor", "id": 5, "ifProficient": true, "qty":1 }]],
-         [[{ "Type": "Weapon", "id": 12, "ifProficient": false, "qty":1 }, { "Type": "Gear", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Equipment", "id": 9, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Pack", "id": 6, "ifProficient": false, "qty":1 }], [{ "Type": "Pack", "id": 5, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Armor", "id": 13, "ifProficient": false, "qty":1 }]],
-         [[{ "Type": "Category", "id": 4, "ifProficient": false, "qty":1 }]],
+         [[{ "Type": "Armor", "id": 10, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty": 1 }, { "Type": "Weapon", "id": 37, "ifProficient": false, "qty": 1 }, { "Type": "Gear", "id": 4, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Equipment", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 5, "ifProficient": true, "qty": 1 }]],
+         [[{ "Type": "Weapon", "id": 12, "ifProficient": false, "qty": 1 }, { "Type": "Gear", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Equipment", "id": 9, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Pack", "id": 6, "ifProficient": false, "qty": 1 }], [{ "Type": "Pack", "id": 5, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Armor", "id": 13, "ifProficient": false, "qty": 1 }]],
+         [[{ "Type": "Category", "id": 4, "ifProficient": false, "qty": 1 }]],
      ],
      "Skills": { "HowMany": 2, "Choices": [2, 10, 1, 6, 11, 16, 13, 14] },
      "Icon": "images/fighter.svg",
@@ -431,7 +560,7 @@ dndapp.factory('DataService', function () {
      "AbilitySuggestion": "First, Dexterity should be your highest ability score. Make Intelligence your next-highest if you want to excel at Investigation. Choose Charisma instead if you plan to emphasize deception and social interaction.",
      "BackgroundSuggestion": "Choose the criminal background.",
      "SpellSuggestion": ""
-            },
+ },
  {
      "id": 4,
      "Name": "Wizard",
@@ -443,7 +572,7 @@ dndapp.factory('DataService', function () {
      "ArmorProficiencies": [],
      "WeaponProficiencies": [2, 13, 15, 8, 12],
      "Tools": [37],
-     "StartingWealth": {"DieCount":4,"Die":4,"Multiplier": 10},
+     "StartingWealth": { "DieCount": 4, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [],
      "Skills": { "HowMany": 2, "Choices": [5, 6, 11, 7, 12, 9] },
      "Icon": "images/wizard.svg",
@@ -614,8 +743,8 @@ dndapp.factory('DataService', function () {
       "properties": ["Light"],
       "Versatile": null,
       "normalrange": 5,
-      "longrange":5
-            },
+      "longrange": 5
+  },
   {
       "id": 2,
       "typeID": 5,
@@ -647,10 +776,10 @@ dndapp.factory('DataService', function () {
       "cost": 500,
       "damage": "1d6 slashing",
       "weight": "2 lb.",
-      "properties": ["Light","Thrown"],
+      "properties": ["Light", "Thrown"],
       "Versatile": null,
       "normalrange": 20,
-      "longrange":60
+      "longrange": 60
   },
   {
       "id": 5,
@@ -662,7 +791,7 @@ dndapp.factory('DataService', function () {
       "properties": ["Thrown"],
       "Versatile": null,
       "normalrange": 30,
-      "longrange":120
+      "longrange": 120
 
   },
   {
@@ -675,7 +804,7 @@ dndapp.factory('DataService', function () {
       "properties": ["Light", "Thrown"],
       "Versatile": null,
       "normalrange": 20,
-      "longrange":60
+      "longrange": 60
   },
   {
       "id": 7,
@@ -1343,7 +1472,7 @@ dndapp.factory('DataService', function () {
         },
         AdventuringGear: function () {
             return [
-                
+
   {
       "id": 1,
       "name": "Abacus",
@@ -2098,133 +2227,133 @@ dndapp.factory('DataService', function () {
         EquipmentPacks: function () {
             return [
                 {
-                    "id":1,
-                    "name":"Burglar’s Pack",
+                    "id": 1,
+                    "name": "Burglar’s Pack",
                     "cost": 1600,
-                    "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":15,"qty":1},  // ball berrings
-                        {"itemID":100,"qty":1}, // string
-                        {"itemID":19,"qty":1},  // bell
-                        {"itemID":26,"qty":5},  // candles
-                        {"itemID":38,"qty":1},  // crowbar
-                        {"itemID":46,"qty":1},  // hammer
-                        {"itemID":72,"qty":10}, // piton
-                        {"itemID":61,"qty":1},  // hooded lantern
-                        {"itemID":67,"qty":2},  // flasks of oil
-                        {"itemID":80,"qty":5},  // rations
-                        {"itemID":95,"qty":1},  // tinderbox
-                        {"itemID":98,"qty":1},  // waterskin
-                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                    "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 15, "qty": 1 },  // ball berrings
+                        { "itemID": 100, "qty": 1 }, // string
+                        { "itemID": 19, "qty": 1 },  // bell
+                        { "itemID": 26, "qty": 5 },  // candles
+                        { "itemID": 38, "qty": 1 },  // crowbar
+                        { "itemID": 46, "qty": 1 },  // hammer
+                        { "itemID": 72, "qty": 10 }, // piton
+                        { "itemID": 61, "qty": 1 },  // hooded lantern
+                        { "itemID": 67, "qty": 2 },  // flasks of oil
+                        { "itemID": 80, "qty": 5 },  // rations
+                        { "itemID": 95, "qty": 1 },  // tinderbox
+                        { "itemID": 98, "qty": 1 },  // waterskin
+                        { "itemID": 82, "qty": 1 },  // 50 feet of hempen rope
                     ]
                 },
             {
-                "id":2,
-                "name":"Diplomat’s Pack",
+                "id": 2,
+                "name": "Diplomat’s Pack",
                 "cost": 3900,
-                "contents":[
-                        {"itemID":31,"qty":1},  // chest
-                        {"itemID":28,"qty":2},  // cases for maps and scrolls
-                        {"itemID":35,"qty":1},  // fine clothes
-                        {"itemID":19,"qty":1},  // bell
-                        {"itemID":55,"qty":1},  // bottle of ink
-                        {"itemID":56,"qty":1},  // ink pen
-                        {"itemID":59,"qty":1},  // lamp
-                        {"itemID":67,"qty":2},  // flasks of oil 
-                        {"itemID":68,"qty":5},  // sheets of paper
-                        {"itemID":70,"qty":1},  // vial of perfume
-                        {"itemID":86,"qty":1},  // sealing wax
-                        {"itemID":90,"qty":1},  // soap
+                "contents": [
+                        { "itemID": 31, "qty": 1 },  // chest
+                        { "itemID": 28, "qty": 2 },  // cases for maps and scrolls
+                        { "itemID": 35, "qty": 1 },  // fine clothes
+                        { "itemID": 19, "qty": 1 },  // bell
+                        { "itemID": 55, "qty": 1 },  // bottle of ink
+                        { "itemID": 56, "qty": 1 },  // ink pen
+                        { "itemID": 59, "qty": 1 },  // lamp
+                        { "itemID": 67, "qty": 2 },  // flasks of oil 
+                        { "itemID": 68, "qty": 5 },  // sheets of paper
+                        { "itemID": 70, "qty": 1 },  // vial of perfume
+                        { "itemID": 86, "qty": 1 },  // sealing wax
+                        { "itemID": 90, "qty": 1 },  // soap
                 ]
             },
             {
-                "id":3,
-                "name":"Dungeoneer’s Pack",
+                "id": 3,
+                "name": "Dungeoneer’s Pack",
                 "cost": 1200,
-                "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":38,"qty":1},  // crowbar 
-                        {"itemID":46,"qty":1},  // hammer
-                        {"itemID":72,"qty":10}, // piton
-                        {"itemID":96,"qty":10}, // torches
-                        {"itemID":95,"qty":1},  // tinderbox
-                        {"itemID":80,"qty":10}, // rations
-                        {"itemID":98,"qty":1},  // waterskin
-                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 38, "qty": 1 },  // crowbar 
+                        { "itemID": 46, "qty": 1 },  // hammer
+                        { "itemID": 72, "qty": 10 }, // piton
+                        { "itemID": 96, "qty": 10 }, // torches
+                        { "itemID": 95, "qty": 1 },  // tinderbox
+                        { "itemID": 80, "qty": 10 }, // rations
+                        { "itemID": 98, "qty": 1 },  // waterskin
+                        { "itemID": 82, "qty": 1 },  // 50 feet of hempen rope
                 ]
             },
             {
-                "id":4,
-                "name":"Entertainer’s Pack",
+                "id": 4,
+                "name": "Entertainer’s Pack",
                 "cost": 4000,
-                "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":18,"qty":1},  // bedroll 
-                        {"itemID":34,"qty":2},  // costumes
-                        {"itemID":26,"qty":5},  // candles
-                        {"itemID":80,"qty":5},  // rations
-                        {"itemID":98,"qty":1},  // waterskin 
-                        {"toolID":18,"qty":1},  // disguise kit
+                "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 18, "qty": 1 },  // bedroll 
+                        { "itemID": 34, "qty": 2 },  // costumes
+                        { "itemID": 26, "qty": 5 },  // candles
+                        { "itemID": 80, "qty": 5 },  // rations
+                        { "itemID": 98, "qty": 1 },  // waterskin 
+                        { "toolID": 18, "qty": 1 },  // disguise kit
                 ]
             },
             {
-                "id":5,
-                "name":"Explorer’s Pack",
+                "id": 5,
+                "name": "Explorer’s Pack",
                 "cost": 1000,
-                "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":18,"qty":1},  // bedroll 
-                        {"itemID":65,"qty":1},  // mess kit
-                        {"itemID":95,"qty":1},  // tinderbox
-                        {"itemID":96,"qty":10}, // torches
-                        {"itemID":80,"qty":10}, // rations
-                        {"itemID":98,"qty":1},  // waterskin
-                        {"itemID":82,"qty":1},  // 50 feet of hempen rope
+                "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 18, "qty": 1 },  // bedroll 
+                        { "itemID": 65, "qty": 1 },  // mess kit
+                        { "itemID": 95, "qty": 1 },  // tinderbox
+                        { "itemID": 96, "qty": 10 }, // torches
+                        { "itemID": 80, "qty": 10 }, // rations
+                        { "itemID": 98, "qty": 1 },  // waterskin
+                        { "itemID": 82, "qty": 1 },  // 50 feet of hempen rope
                 ]
             },
             {
-                "id":6,
-                "name":"Priest’s Pack",
+                "id": 6,
+                "name": "Priest’s Pack",
                 "cost": 1000,
-                "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":20,"qty":1},  // blanket 
-                        {"itemID":26,"qty":10}, // candles
-                        {"itemID":95,"qty":1},  // tinderbox
-                        {"itemID":101,"qty":1}, // alms box
-                        {"itemID":102,"qty":2}, // blocks of incense
-                        {"itemID":103,"qty":1}, // censer
-                        {"itemID":104,"qty":1}, // vestments
-                        {"itemID":80,"qty":2},  // rations
-                        {"itemID":98,"qty":1},  // waterskin
+                "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 20, "qty": 1 },  // blanket 
+                        { "itemID": 26, "qty": 10 }, // candles
+                        { "itemID": 95, "qty": 1 },  // tinderbox
+                        { "itemID": 101, "qty": 1 }, // alms box
+                        { "itemID": 102, "qty": 2 }, // blocks of incense
+                        { "itemID": 103, "qty": 1 }, // censer
+                        { "itemID": 104, "qty": 1 }, // vestments
+                        { "itemID": 80, "qty": 2 },  // rations
+                        { "itemID": 98, "qty": 1 },  // waterskin
                 ]
             },
             {
-                "id":7,
-                "name":"Scholar’s Pack",
+                "id": 7,
+                "name": "Scholar’s Pack",
                 "cost": 4000,
-                "contents":[
-                        {"itemID":14,"qty":1},  // backpack
-                        {"itemID":105,"qty":1}, // book of lore
-                        {"itemID":55,"qty":1},  // bottle of ink
-                        {"itemID":56,"qty":1},  // ink pen
-                        {"itemID":69,"qty":10}, // sheets of parchment
-                        {"itemID":106,"qty":1}, // little bag of sand
-                        {"itemID":107,"qty":1}, // small knife
+                "contents": [
+                        { "itemID": 14, "qty": 1 },  // backpack
+                        { "itemID": 105, "qty": 1 }, // book of lore
+                        { "itemID": 55, "qty": 1 },  // bottle of ink
+                        { "itemID": 56, "qty": 1 },  // ink pen
+                        { "itemID": 69, "qty": 10 }, // sheets of parchment
+                        { "itemID": 106, "qty": 1 }, // little bag of sand
+                        { "itemID": 107, "qty": 1 }, // small knife
                 ]
             },
 
             ];
         },
-        DivineDomains: function(){
+        DivineDomains: function () {
             return [
-                {"id":1,"name":"Knowledge"},
-                {"id":2,"name":"Life"},
-                {"id":3,"name":"Light"},
-                {"id":4,"name":"Nature"},
-                {"id":5,"name":"Tempest"},
-                {"id":6,"name":"Trickery"},
-                {"id":7,"name":"War"},
+                { "id": 1, "name": "Knowledge" },
+                { "id": 2, "name": "Life" },
+                { "id": 3, "name": "Light" },
+                { "id": 4, "name": "Nature" },
+                { "id": 5, "name": "Tempest" },
+                { "id": 6, "name": "Trickery" },
+                { "id": 7, "name": "War" },
             ];
         },
         Dieties: function () {
@@ -2234,8 +2363,8 @@ dndapp.factory('DataService', function () {
                     "pantheon": "The Forgotten Realms",
                     "name": "",
                     "Alignment": "",
-                    "SuggestedDomains":[],
-                    "Symbol":"",
+                    "SuggestedDomains": [],
+                    "Symbol": "",
                 },
             ];
         },
