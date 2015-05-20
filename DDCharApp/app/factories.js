@@ -499,7 +499,7 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [1, 2, 4, 5, 6],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [],
-     "Tools": [],
+     "ToolProficiencies": [],
      "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [
          [[{ "Type": "Weapon", "id": 7, "ifProficient": false, "qty": 1 }], [{ "Type": "Weapon", "id": 32, "ifProficient": true, "qty": 1 }]],
@@ -526,7 +526,7 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [1, 2, 3, 4, 5, 6, 7, 8],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [],
-     "Tools": [],
+     "ToolProficiencies": [],
      "StartingWealth": { "DieCount": 5, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [
          [[{ "Type": "Armor", "id": 10, "ifProficient": false, "qty": 1 }], [{ "Type": "Armor", "id": 2, "ifProficient": false, "qty": 1 }, { "Type": "Weapon", "id": 37, "ifProficient": false, "qty": 1 }, { "Type": "Gear", "id": 4, "ifProficient": false, "qty": 1 }]],
@@ -552,7 +552,7 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [1, 5, 6],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [35, 23, 27, 29],
-     "Tools": [],
+     "ToolProficiencies": [],
      "StartingWealth": { "DieCount": 4, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [],
      "Skills": { "HowMany": 4, "Choices": [2, 1, 15, 11, 16, 7, 13, 17, 3, 4] },
@@ -571,7 +571,7 @@ dndapp.factory('DataService', function () {
      "EquipmentTypeProficiencies": [],
      "ArmorProficiencies": [],
      "WeaponProficiencies": [2, 13, 15, 8, 12],
-     "Tools": [37],
+     "ToolProficiencies": [37],
      "StartingWealth": { "DieCount": 4, "Die": 4, "Multiplier": 10 },
      "StartingEquip": [],
      "Skills": { "HowMany": 2, "Choices": [5, 6, 11, 7, 12, 9] },
@@ -592,7 +592,7 @@ dndapp.factory('DataService', function () {
                 { "id": 6, "name": "Simple Ranged Weapons", "don": "", "doff": "" },
                 { "id": 7, "name": "Martial Melee Weapons", "don": "", "doff": "" },
                 { "id": 8, "name": "Martial Ranged Weapons", "don": "", "doff": "" },
-                // the next two are special: used to represent the groups of melee/ranged for 5-6 above
+                // the next two are special: used to represent the groups of melee/ranged for 5-8 above
                 { "id": 9, "name": "Simple Weapons", "don": "", "doff": "" },
                 { "id": 10, "name": "Martial Weapons", "don": "", "doff": "" },
             ];
@@ -735,7 +735,7 @@ dndapp.factory('DataService', function () {
             return [
   {
       "id": 1,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Club",
       "cost": 10,
       "damage": "1d4 bludgeoning",
@@ -747,7 +747,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 2,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Dagger",
       "cost": 200,
       "damage": "1d4 piercing",
@@ -759,7 +759,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 3,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Greatclub",
       "cost": 20,
       "damage": "1d8 bludgeoning",
@@ -771,7 +771,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 4,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Handaxe",
       "cost": 500,
       "damage": "1d6 slashing",
@@ -783,7 +783,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 5,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Javelin",
       "cost": 50,
       "damage": "1d6 piercing",
@@ -796,7 +796,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 6,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Light hammer",
       "cost": 200,
       "damage": "1d4 bludgeoning",
@@ -808,7 +808,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 7,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Mace",
       "cost": 500,
       "damage": "1d6 bludgeoning",
@@ -820,7 +820,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 8,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Quarterstaff",
       "cost": 20,
       "damage": "1d6 bludgeoning",
@@ -832,7 +832,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 9,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Sickle",
       "cost": 100,
       "damage": "1d4 slashing",
@@ -844,7 +844,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 10,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Spear",
       "cost": 100,
       "damage": "1d6 piercing",
@@ -856,7 +856,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 11,
-      "typeID": 5,
+      "typeID": [5,9],
       "name": "Unarmed strike",
       "cost": null,
       "damage": "1 bludgeoning",
@@ -868,7 +868,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 12,
-      "typeID": 6,
+      "typeID": [6,9],
       "name": "Light Crossbow",
       "cost": 2500,
       "damage": "1d8 piercing",
@@ -880,7 +880,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 13,
-      "typeID": 6,
+      "typeID": [6,9],
       "name": "Dart",
       "cost": 5,
       "damage": "1d4 piercing",
@@ -892,7 +892,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 14,
-      "typeID": 6,
+      "typeID": [6,9],
       "name": "Shortbow",
       "cost": 2500,
       "damage": "1d6 piercing",
@@ -904,7 +904,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 15,
-      "typeID": 6,
+      "typeID": [6,9],
       "name": "Sling",
       "cost": 10,
       "damage": "1d4 bludgeoning",
@@ -916,7 +916,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 16,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Battleaxe",
       "cost": 1000,
       "damage": "1d8 slashing",
@@ -928,7 +928,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 17,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Flail",
       "cost": 1000,
       "damage": "1d8 bludgeoning",
@@ -940,7 +940,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 18,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Glaive",
       "cost": 2000,
       "damage": "1d10 slashing",
@@ -952,7 +952,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 19,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Greataxe",
       "cost": 3000,
       "damage": "1d12 slashing",
@@ -964,7 +964,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 20,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Greatsword",
       "cost": 5000,
       "damage": "2d6 slashing",
@@ -976,7 +976,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 21,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Halberd",
       "cost": 2000,
       "damage": "1d10 slashing",
@@ -988,7 +988,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 22,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Lance",
       "cost": 1000,
       "damage": "1d12 piercing",
@@ -1000,7 +1000,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 23,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Longsword",
       "cost": 1500,
       "damage": "1d8 slashing",
@@ -1012,7 +1012,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 24,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Maul",
       "cost": 1000,
       "damage": "2d6 bludgeoning",
@@ -1024,7 +1024,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 25,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Morningstar",
       "cost": 1500,
       "damage": "1d8 piercing",
@@ -1036,7 +1036,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 26,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Pike",
       "cost": 500,
       "damage": "1d10 piercing",
@@ -1048,7 +1048,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 27,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Rapier",
       "cost": 2500,
       "damage": "1d8 piercing",
@@ -1060,7 +1060,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 28,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Scimitar",
       "cost": 2500,
       "damage": "1d6 slashing",
@@ -1072,7 +1072,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 29,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Shortsword",
       "cost": 1000,
       "damage": "1d6 piercing",
@@ -1084,7 +1084,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 30,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Trident",
       "cost": 500,
       "damage": "1d6 piercing",
@@ -1096,7 +1096,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 31,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "War pick",
       "cost": 500,
       "damage": "1d8 piercing",
@@ -1108,7 +1108,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 32,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Warhammer",
       "cost": 1500,
       "damage": "1d8 bludgeoning",
@@ -1120,7 +1120,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 33,
-      "typeID": 7,
+      "typeID": [7,10],
       "name": "Whip",
       "cost": 200,
       "damage": "1d4 slashing",
@@ -1132,7 +1132,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 34,
-      "typeID": 8,
+      "typeID": [8,10],
       "name": "Blowgun",
       "cost": 1000,
       "damage": "1 piercing",
@@ -1144,7 +1144,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 35,
-      "typeID": 8,
+      "typeID": [8,10],
       "name": "Hand Crossbow",
       "cost": 7500,
       "damage": "1d6 piercing",
@@ -1156,7 +1156,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 36,
-      "typeID": 8,
+      "typeID": [8,10],
       "name": "Heavy Crossbow",
       "cost": 5000,
       "damage": "1d10 piercing",
@@ -1168,7 +1168,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 37,
-      "typeID": 8,
+      "typeID": [8,10],
       "name": "Longbow",
       "cost": 5000,
       "damage": "1d8 piercing",
@@ -1180,7 +1180,7 @@ dndapp.factory('DataService', function () {
   },
   {
       "id": 38,
-      "typeID": 8,
+      "typeID": [8,10],
       "name": "Net",
       "cost": 100,
       "damage": null,
@@ -2347,7 +2347,21 @@ dndapp.factory('DataService', function () {
         },
         DivineDomains: function () {
             return [
-                { "id": 1, "name": "Knowledge" },
+                {
+                    "id": 1,
+                    "name": "Knowledge",
+                    "desc": "The gods of knowledge—including Oghma, Boccob, Gilean, Aureon, and Thoth—value learning and understanding above all. Some teach that knowledge is to be gathered and shared in libraries and universities, or promote the practical knowledge of craft and invention. Some deities hoard knowledge and keep its secrets to themselves. And some promise their followers that they will gain tremendous power if they unlock the secrets of the multiverse. Followers of these gods study esoteric lore, collect old tomes, delve into the secret places of the earth, and learn all they can. Some gods of knowledge promote the practical knowledge of craft and invention, including smith deities like Gond, Reorx, Onatar, Moradin, Hephaestus, and Goibhniu.",
+                    "spells": [
+                        { "level": 1, "spells": ["command", "identify"] },
+                        { "level": 3, "spells": ["augury", "suggestion"] },
+                        { "level": 5, "spells": ["nondetection", "speak with dead"] },
+                        { "level": 7, "spells": ["arcane eye", "confusion"] },
+                        { "level": 9, "spells": ["legend lore", "scrying"] },
+                    ],
+                    "traits": [
+                        {"level":1,"name":"Blessings of Knowledge", "desc":"At 1st level, you learn two languages of your choice. You also become proficient in your choice of two of the following skills: Arcana, History, Nature, or Religion. Your proficiency bonus is doubled for any ability check you make that uses either of those skills."},
+                    ],
+                },
                 { "id": 2, "name": "Life" },
                 { "id": 3, "name": "Light" },
                 { "id": 4, "name": "Nature" },
