@@ -48,8 +48,8 @@
 
             <ion-side-menu-content>
                 <ion-nav-bar class="bar-positive">
-                    <ion-nav-back-button>
-                    </ion-nav-back-button>
+                    <!--<ion-nav-back-button>
+                    </ion-nav-back-button>-->
 
                     <ion-nav-buttons side="left">
                         <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -82,27 +82,50 @@
                         <div class="item item-divider">
                             Appendix
                         </div>
-                        <a ui-sref="app.data.abilities" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Abilities</a>
-                        <a ui-sref="app.data.advGear" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Adventuring Gear</a>
-                        <a ui-sref="app.data.alignments" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Alignments</a>
-                        <a ui-sref="app.data.armor" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Armor</a>
-                        <a ui-sref="app.data.classes" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Classes</a>
-                        <a ui-sref="app.data.conditions" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Conditions</a>
-                        <a ui-sref="app.data.dieties" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Dieties</a>
-                        <a ui-sref="app.data.divinedomains" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Divine Domains</a>
-                        <a ui-sref="app.data.equipPacks" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Equipment Packs</a>
-                        <a ui-sref="app.data.languages" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Languages</a>
-                        <a ui-sref="app.data.races" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Races</a>
-                        <a ui-sref="app.data.skills" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Skills</a>
-                        <a ui-sref="app.data.spells" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Spells</a>
-                        <a ui-sref="app.data.tools" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Tools</a>
-                        <a ui-sref="app.data.weapons" class="item item-icon-left" menu-close><i class="icon ion-compose royal"></i>Weapons</a>
+                        <a ui-sref="app.abilities" class="item" menu-close>Abilities</a>
+                        <a ui-sref="app.advGear" class="item" menu-close>Adventuring Gear</a>
+                        <a ui-sref="app.alignments" class="item" menu-close>Alignments</a>
+                        <a ui-sref="app.armor" class="item" menu-close>Armor</a>
+                        <a ui-sref="app.classes" class="item" menu-close>Classes</a>
+                        <a ui-sref="app.conditions" class="item" menu-close>Conditions</a>
+                        <a ui-sref="app.dieties" class="item" menu-close>Dieties</a>
+                        <a ui-sref="app.divinedomains" class="item" menu-close>Divine Domains</a>
+                        <a ui-sref="app.equipPacks" class="item" menu-close>Equipment Packs</a>
+                        <a ui-sref="app.languages" class="item" menu-close>Languages</a>
+                        <a ui-sref="app.races" class="item" menu-close>Races</a>
+                        <a ui-sref="app.skills" class="item" menu-close>Skills</a>
+                        <a ui-sref="app.spells" class="item" menu-close>Spells</a>
+                        <a ui-sref="app.tools" class="item" menu-close>Tools</a>
+                        <a ui-sref="app.weapons" class="item" menu-close>Weapons</a>
                     </div>
                 </ion-content>
             </ion-side-menu>
 
         </ion-side-menus>
     </script>
+
+    <script id="templates/abilityList.html" type="text/ng-template">
+        <ion-view view-title="Ability List">
+            <ion-content>
+                <ion-list>
+                    <ion-item ng-repeat="ability in abilities" ui-sref="app.ability({abilityID:ability.id})">
+                        {{ability.name}}
+                    </ion-item>
+                </ion-list>
+            </ion-content>
+        </ion-view>
+    </script>
+    <script id="templates/abilityDetail.html" type="text/ng-template">
+        <ion-view view-title="{{ability.name}}">
+            <ion-content class="padding has-footer">
+                {{ability.description}}
+            </ion-content>
+            <!--<div class="tabs tabs-icon-top">
+                <back-tab text="Go Back"></back-tab>
+            </div>-->
+        </ion-view>
+    </script>
+
 
     <script id="templates/home.html" type="text/ng-template">
         <ion-view view-title="Character List">
@@ -481,7 +504,7 @@
                         Ability Score Increase
                     </div>
                     <div class="item item-text-wrap" ng-repeat="asi in chosenRace.ASI">
-                        <info-popup title="{{helper.getASI(asi.id).name}}" text="{{helper.getASI(asi.id).description}}"></info-popup> {{helper.getASI(asi.id).name}} +{{asi.bonus}}
+                        <info-popup title="{{helper.getAbility(asi.id).name}}" text="{{helper.getAbility(asi.id).description}}"></info-popup> {{helper.getAbility(asi.id).name}} +{{asi.bonus}}
                     </div>
                 </div>
                 <div class="row" style="padding:0">
@@ -595,7 +618,7 @@
                         Ability Score Increase
                     </div>
                     <div class="item item-text-wrap" ng-repeat="asi in chosenSubRace.ASI">
-                        <info-popup title="{{helper.getASI(asi.id).name}}" text="{{helper.getASI(asi.id).description}}"></info-popup> {{helper.getASI(asi.id).name}} +{{asi.bonus}}
+                        <info-popup title="{{helper.getAbility(asi.id).name}}" text="{{helper.getAbility(asi.id).description}}"></info-popup> {{helper.getAbility(asi.id).name}} +{{asi.bonus}}
                     </div>
                 </div>
                 <div class="list card">
@@ -694,7 +717,7 @@
                         Saving Throw Proficiencies
                     </div>
                     <div class="item item-text-wrap" ng-repeat="ability in chosenClass.SavingThrowProficiencies">
-                        <info-popup title="{{helper.getASI(ability).name}}" text="{{helper.getASI(ability).description}}"></info-popup> {{helper.getASI(ability).name}}
+                        <info-popup title="{{helper.getAbility(ability).name}}" text="{{helper.getAbility(ability).description}}"></info-popup> {{helper.getAbility(ability).name}}
                     </div>
                 </div>
 

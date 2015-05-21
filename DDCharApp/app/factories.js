@@ -57,8 +57,8 @@ dndapp.factory('DetailService', function ($filter, DataService) {
             var race = this.getRace(raceID);
             return ($filter('filter')(race.subrace, { id: Number(subRaceID) }, true))[0];
         },
-        getASI: function (asiID) {
-            return ($filter('filter')(DataService.AbilityScores(), { id: Number(asiID) }, true))[0];
+        getAbility: function (abilityID) {
+            return ($filter('filter')(DataService.AbilityScores(), { id: Number(abilityID) }, true))[0];
         },
         getSkill: function (skillID) {
             return ($filter('filter')(DataService.Skills(), { id: Number(skillID) }, true))[0];

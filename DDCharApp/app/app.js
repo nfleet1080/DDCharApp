@@ -32,6 +32,28 @@ dndapp.config(function ($stateProvider, $urlRouterProvider) {
                 }
             }
         })
+        .state('app.abilities', {
+            url: "/abilityList",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/abilityList.html",
+                    controller: function ($scope, DataService, DetailService) {
+                        $scope.abilities = DataService.AbilityScores();
+                    }
+                }
+            }
+        })
+        .state('app.ability', {
+            url: "/ability/:abilityID",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/abilityDetail.html",
+                    controller: function ($scope, DataService, DetailService, $stateParams) {
+                        $scope.ability = DetailService.getAbility($stateParams.abilityID);
+                    }
+                }
+            }
+        })
         .state('generator', {
             url: "/generator",
             abstract: true,
